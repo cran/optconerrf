@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Constraints, Interim Estimates and Conditional Power Functions for the Optimal Conditional Error Function</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Constraints, Interim Estimates and
+Conditional Power Functions for the Optimal Conditional Error
+Function</h1>
+
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(optconerrf)</span></code></pre></div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<p>This vignette provides examples on some slightly more advanced
+methods which can be applied in the framework of the optimal conditional
+error function. Firstly, the use of constraints for the optimal
+conditional error function is illustrated and afterwards, the use of an
+interim estimate for the effect at which the conditional power should be
+achieved as well as the implementation of a data-dependent conditional
+power function are discussed.</p>
+</div>
+<div id="constraints" class="section level1">
+<h1>Constraints</h1>
+<p>In the framework of two-stage adaptive designs, it may not be
+feasible to allow the second-stage information to fall below a certain
+minimum <span class="math inline">\(I_{2,\min}\)</span>, e.g., if a
+certain amount of data on safety or secondary endpoints are required.
+Conversely, budgeting considerations may impose an upper limit <span class="math inline">\(I_{2, \max}\)</span> on the information that can
+be collected in the second-stage. Instead of ignoring these constraints
+in the planning phase and applying them “post-hoc”, they can be
+accounted for in the minimisation procedure of the optimal conditional
+error function. For illustration purposes, we use a trial design with
+overall type I error rate <span class="math inline">\(\alpha=0.025\)</span>, early decision boundaries
+<span class="math inline">\(\alpha_1 = 0.000158\)</span> and <span class="math inline">\(\alpha_0 = 0.5\)</span> with conditional power
+<span class="math inline">\(CP=0.9\)</span> at the fixed alternative
+<span class="math inline">\(\Delta_1 = 0.25\)</span>. After collecting a
+first-stage information of <span class="math inline">\(I_1=85\)</span>,
+the information of the second-stage of the trial should lie between
+<span class="math inline">\(I_{2, \min} = 85/2\)</span> and <span class="math inline">\(I_{2, \max} = 85\cdot 2\)</span>. To implement
+this design using the optimal conditional error function with the
+maximum likelihood ratio approach, the following code is required:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>trialDesignConstraints <span class="ot">&lt;-</span> <span class="fu">getDesignOptimalConditionalErrorFunction</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="at">alpha =</span> <span class="fl">0.025</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="at">alpha1 =</span> <span class="fl">0.000158</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="at">alpha0 =</span> <span class="fl">0.5</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="at">conditionalPower =</span> <span class="fl">0.9</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>  <span class="at">delta1 =</span> <span class="fl">0.25</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>  <span class="at">useInterimEstimate =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>  <span class="at">likelihoodRatioDistribution =</span> <span class="st">&quot;maxlr&quot;</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>  <span class="at">firstStageInformation =</span> <span class="dv">85</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>  <span class="at">minimumSecondStageInformation =</span> <span class="dv">85</span><span class="sc">/</span><span class="dv">2</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>  <span class="at">maximumSecondStageInformation =</span> <span class="dv">85</span><span class="sc">*</span><span class="dv">2</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>)</span></code></pre></div>
+<p>The constraints are supplied by the arguments
+<code>minimumSecondStageInformation</code> and
+<code>maximumSecondStageInformation</code>. Plotting the second-stage
+information of this design highlights the application of the constraints
+(represented by the gray dashed lines):</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># type = 2 for second-stage information</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">plot</span>(trialDesignConstraints, <span class="at">type =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fu">c</span>(<span class="dv">85</span><span class="sc">/</span><span class="dv">2</span>, <span class="dv">85</span><span class="sc">*</span><span class="dv">2</span>), <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">colour =</span> <span class="st">&quot;gray&quot;</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<p>Alternatively, the constraints may be directly specified on the
+conditional error function as <span class="math inline">\(\alpha_{2,\min}\)</span> and <span class="math inline">\(\alpha_{2,\max}\)</span> due to</p>
+<p><span class="math display">\[
+\alpha_{2,\min} = \Phi(\Phi^{-1}(CP)- \Delta_1\sqrt{I_{2,\max}})
+\]</span> and <span class="math display">\[
+\alpha_{2,\max} = \Phi(\Phi^{-1}(CP)- \Delta_1\sqrt{I_{2,\min}}).
+\]</span> Note that constraining the <em>maximum</em> second-stage
+information corresponds to imposing a constraint on the <em>minimum</em>
+conditional error and that constraining the <em>minimum</em>
+second-stage information corresponds to imposing a constraint on the
+<em>maximum</em> conditional error. Plugging in <span class="math inline">\(I_{2, \max} = 85\cdot 2\)</span> and <span class="math inline">\(I_{2,\min} = 85/2\)</span>, we get <span class="math inline">\(\alpha_{2,\min} \approx 0.02396\)</span> and <span class="math inline">\(\alpha_{2,\max} \approx 0.36382\)</span> and can
+create the same design, now using <code>minimumConditionalError</code>
+and <code>maximumConditionalError</code> for the constraints:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>trialDesignConstraintsConditionalError <span class="ot">&lt;-</span> <span class="fu">getDesignOptimalConditionalErrorFunction</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="at">alpha =</span> <span class="fl">0.025</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="at">alpha1 =</span> <span class="fl">0.000158</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="at">alpha0 =</span> <span class="fl">0.5</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="at">conditionalPower =</span> <span class="fl">0.9</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="at">delta1 =</span> <span class="fl">0.25</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  <span class="at">useInterimEstimate =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>  <span class="at">likelihoodRatioDistribution =</span> <span class="st">&quot;maxlr&quot;</span>,</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>  <span class="at">firstStageInformation =</span> <span class="dv">85</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>  <span class="at">minimumConditionalError =</span>  <span class="fl">0.02396</span>,</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>  <span class="at">maximumConditionalError =</span> <span class="fl">0.36382</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>)</span></code></pre></div>
+<p>Comparing the expected second-stage information of the designs for
+<span class="math inline">\(\Delta=0.25\)</span> yields essentially the
+same values, with a minor difference resulting from rounding of <span class="math inline">\(\alpha_{2,\min}\)</span> and <span class="math inline">\(\alpha_{2,\max}\)</span>.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">getExpectedSecondStageInformation</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  trialDesignConstraints, </span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="at">likelihoodRatioDistribution =</span> <span class="st">&quot;fixed&quot;</span>, </span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="at">deltaLR =</span> <span class="fl">0.25</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>)</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt; [1] 70.9902</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="fu">getExpectedSecondStageInformation</span>(</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  trialDesignConstraintsConditionalError, </span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  <span class="at">likelihoodRatioDistribution =</span> <span class="st">&quot;fixed&quot;</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>  <span class="at">deltaLR =</span> <span class="fl">0.25</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>)</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt; [1] 70.99019</span></span></code></pre></div>
+<p>It is also possible to specify constraints on <em>both</em> scales
+simultaneously, i.e., on the second-stage information and on the
+conditional error function at the same time. If this is done, the more
+restrictive constraint is applied. However, when using a fixed effect
+size <span class="math inline">\(\Delta_1\)</span> and constant
+conditional power <span class="math inline">\(CP\)</span>, the scales
+have a one-to-one correspondence (as seen above in the formulas for
+<span class="math inline">\(\alpha_{2,\min}\)</span> and <span class="math inline">\(\alpha_{2,\max}\)</span>) and supplying one of
+them is sufficient.</p>
+<p>Note that the specification of inappropriate constraints can make it
+impossible to fully exhaust (and not exceed) the <span class="math inline">\(\alpha\)</span> level, i.e., find a level constant
+for the design. (As an example, consider a design with <span class="math inline">\(\alpha=0.025\)</span>, <span class="math inline">\(\alpha_1=0\)</span> and <span class="math inline">\(\alpha_0=1\)</span>. Since the full <span class="math inline">\(\alpha\)</span> level is to be spent in the second
+stage, it follows from the level condition (see
+<code>?getLevelConstant</code>) that <span class="math inline">\(0.025 =
+\int_0^1 \alpha_2(p_1)dp_1\)</span>. The exemplary constraint <span class="math inline">\(\alpha_{2,\max}=0.01\)</span> is inappropriate
+since when applying it, <span class="math inline">\(\int_0^1 \min(0.01,
+\alpha_2(p_1))dp_1 \leq \int_0^1 0.01 dp_1 = 0.01 \neq 0.025\)</span>
+and the level condition cannot be fulfilled.)</p>
+</div>
+<div id="interim-estimate-for-treatment-effect" class="section level1">
+<h1>Interim Estimate for Treatment Effect</h1>
+<p>In certain applications, using a fixed effect <span class="math inline">\(\Delta_1\)</span> at which the conditional power
+(be it constant or a function, more details below) should be achieved
+may not be appropriate. For example, we may wish to estimate this effect
+from the first-stage data if only little or unreliable evidence
+regarding the treatment effect is available during initial trial
+planning. A simple estimate for the interim effect is given by:</p>
+<p><span class="math display">\[
+\hat\Delta_1(p_1) = \Phi^{-1}(1-p_1)/ \sqrt{I_1}.
+\]</span> An issue with this estimate is the fact that it may become
+negative for <span class="math inline">\(p_1 &gt; 0.5\)</span>. However,
+negative effects are part of the null hypothesis <span class="math inline">\(H_0: \Delta \leq 0\)</span> and cannot reasonably
+be powered for. Furthermore, a clinical trial typically operates with a
+minimally clinically relevant effect size <span class="math inline">\(\Delta_{1, \min} &gt; 0\)</span>, which marks the
+lower boundary of effects considered worthwhile detecting. For this
+reason, it is generally advisable to cut off interim effects that fall
+below <span class="math inline">\(\Delta_{1,\min}\)</span> (and instead
+use <span class="math inline">\(\Delta_{1, \min}\)</span>). An upper
+limit <span class="math inline">\(\Delta_{1, \max}\)</span> may also be
+put in place to deselect overly optimistic interim effects (and instead
+use <span class="math inline">\(\Delta_{1, \max}\)</span>). Implementing
+both cutoffs leads to the truncated interim estimate:</p>
+<p><span class="math display">\[
+\tilde\Delta_1(p_1) = \min(\max(\hat\Delta_1(p_1), \,
+\Delta_{1,\min}),\, \Delta_{1,\max}).
+\]</span> When creating a design object with
+<code>getDesignOptimalConditionalErrorFunction()</code>, the use of an
+interim estimate for the treatment effect at which the conditional power
+should be achieved is specified by setting
+<code>useInterimEstimate = TRUE</code>. When an interim estimate is
+used, the lower limit <span class="math inline">\(\Delta_{1,\min}\)</span> must be specified by the
+argument <code>delta1Min</code>. An upper limit is not required, but can
+optionally be specified via <code>delta1Max</code>. Both arguments may
+also be specified on the non-centrality parameter scale with <span class="math inline">\(\vartheta_{1,\min} = \Delta_{1,
+\min}\cdot\sqrt{I_1}\)</span> as <code>ncp1Min</code> and <span class="math inline">\(\vartheta_{1,\max} = \Delta_{1,
+\max}\cdot\sqrt{I_1}\)</span> as <code>ncp1Max</code>.</p>
+<p>As an example, consider the same trial setting as above with <span class="math inline">\(\alpha=0.025\)</span>, <span class="math inline">\(\alpha_1=0.000158\)</span>, <span class="math inline">\(\alpha_0=0.5\)</span>, <span class="math inline">\(CP=0.9\)</span>, <span class="math inline">\(I_1 =
+85\)</span> and the maximum likelihood ratio. Now, instead of using a
+fixed effect <span class="math inline">\(\Delta_1\)</span>, we wish to
+estimate this effect from the data with a minimally clinically relevant
+effect size of <span class="math inline">\(\Delta_{1,
+\min}=0.15\)</span>. Additionally, we wish to deselect interim estimate
+effects above <span class="math inline">\(\Delta_{1,\max} =
+0.35\)</span>.</p>
+<p>The design object is then created as:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>trialDesignInterimEstimate <span class="ot">&lt;-</span> </span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="fu">getDesignOptimalConditionalErrorFunction</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.025</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>    <span class="at">alpha1 =</span> <span class="fl">0.000158</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>    <span class="at">alpha0 =</span> <span class="fl">0.5</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>    <span class="at">conditionalPower =</span> <span class="fl">0.9</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>    <span class="at">useInterimEstimate =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>    <span class="at">delta1Min =</span> <span class="fl">0.15</span>,</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>    <span class="at">delta1Max =</span> <span class="fl">0.35</span>,</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>    <span class="at">firstStageInformation =</span> <span class="dv">85</span>,</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>    <span class="at">likelihoodRatioDistribution =</span> <span class="st">&quot;maxlr&quot;</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>  )</span></code></pre></div>
+<p>Plotting the optimal conditional error function and second-stage
+information from this design yields:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">plot</span>(trialDesignInterimEstimate, <span class="at">type =</span> <span class="dv">1</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">plot</span>(trialDesignInterimEstimate, <span class="at">type =</span> <span class="dv">2</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<p>Note that for a design with an early efficacy boundary <span class="math inline">\(\alpha_1&gt;0\)</span>, an upper limit for the
+effect is always implicitly given by <span class="math inline">\(\Delta_{1,\max} =
+\Phi^{-1}(1-\alpha_1)/\sqrt{I_1}\)</span>, which is <span class="math inline">\(\Phi^{-1}(1-0.000158)/\sqrt{85}=0.390672\)</span>
+in our example. While this always applies for the upper limit, a
+futility boundary <span class="math inline">\(\alpha_0 &lt; 1\)</span>
+may not always correspond to a lower limit <span class="math inline">\(\Delta_{1, \min}&gt;0\)</span> (more precisely,
+the implicit boundary <span class="math inline">\(\Delta_{1,\min} \leq
+0\)</span> would occur if <span class="math inline">\(0.5 \leq \alpha_0
+&lt; 1\)</span>). For this reason, it is mandatory that <span class="math inline">\(\Delta_{1,\min}&gt;0\)</span> (or, alternatively,
+<span class="math inline">\(\vartheta_{1,\min}&gt;0\)</span>) are
+explicitly specified, regardless of the futility boundary <span class="math inline">\(\alpha_0\)</span>.</p>
+<p>It is also possible to specify constraints on either or both the
+optimal conditional error scale or the second-stage information scale
+for designs implementing an interim estimate. Rescaling the constraints,
+as opposed to the above case using a fixed effect size <span class="math inline">\(\Delta_1\)</span>, must now take into account the
+interim estimate <span class="math inline">\(\tilde{\Delta}_1(p_1)\)</span> and requires the
+use of the constraint functions:</p>
+<p><span class="math display">\[
+\alpha_{2,\min}(p_1) = \Phi(\Phi^{-1}(CP)-
+\tilde{\Delta}_1(p_1)\sqrt{I_{2,\max}})
+\]</span> and</p>
+<p><span class="math display">\[
+\alpha_{2,\max}(p_1) = \Phi(\Phi^{-1}(CP)-
+\tilde{\Delta}_1(p_1)\sqrt{I_{2,\min}}).
+\]</span></p>
+<p>Since <span class="math inline">\(I_{2, \max} \geq
+I_{2,\min}\)</span>, it follows that <span class="math inline">\(\alpha_{2,\min}(p_1) \leq
+\alpha_{2,\max}(p_1)\)</span>. Note that both constraint functions are
+<em>non-decreasing</em> in <span class="math inline">\(p_1\)</span>,
+since <span class="math inline">\(\tilde{\Delta}_1(p_1)\)</span> is
+non-increasing in <span class="math inline">\(p_1\)</span>. To ensure
+that the resulting conditional error function is nevertheless
+non-increasing, we may exploit a property of <span class="math inline">\(\tilde{\Delta}_1(p_1)\)</span>: The smallest
+effect size of the interim estimate is always given by <span class="math inline">\(\Delta_{1,\min}\)</span> (or may occur for <span class="math inline">\(p_1 = \alpha_0\)</span>). As the smallest effect
+size corresponds to the largest second-stage information, we can plug in
+the smallest effect in the formula for <span class="math inline">\(\alpha_{2,\min}(p_1)\)</span> and achieve a
+constant constraint. If an upper limit for the effect size is provided,
+either via <span class="math inline">\(\Delta_{1,\max}\)</span> or at
+<span class="math inline">\(p_1 = \alpha_1\)</span>, the same shortcut
+is applicable for <span class="math inline">\(\alpha_{2,\max}(p_1)\)</span>.</p>
+</div>
+<div id="using-a-conditional-power-function" class="section level1">
+<h1>Using a Conditional Power Function</h1>
+<p>The conditional power describes the probability of a successful trial
+outcome at the final analysis (i.e., rejection of <span class="math inline">\(H_0\)</span>) given the interim data and an effect
+assumption, which can either be pre-defined or derived from the interim
+data (see the section above). Aiming to achieve the same value for the
+conditional power, e.g., 80%, regardless of the interim results of the
+trial may not be intuitive. Instead, one may aim for a higher
+conditional power if the interim results are promising and settle for a
+lower conditional power for poor interim results. Such an approach can
+be realised through the use of a conditional power function which
+depends on the interim data. Generally, a small first-stage p-value may
+warrant a large conditional power, whereas for weaker first-stage
+evidence, a lower conditional power may be more appropriate. Thus, the
+conditional power function should be decreasing (or at least
+non-increasing) in the first-stage p-value.</p>
+<p>Importantly, the use of a (decreasing) conditional power function may
+lead to a non-monotone second-stage information function. For a fixed
+conditional power, the second-stage information required to achieve that
+conditional power will always be increasing in <span class="math inline">\(p_1\)</span> (provided the conditional error
+function is non-increasing in <span class="math inline">\(p_1\)</span>).
+A decreasing conditional power function may impact the second-stage
+information function in a way that it increases for small first-stage
+p-values, reaches a maximum and decreases for larger first-stage
+p-values. In <code>optconerrf</code>, the user may freely specify a
+conditional power function to
+<code>getDesignOptimalConditionalErrorFunction()</code> via the argument
+<code>conditionalPowerFunction</code>. In the current implementation,
+the first-stage p-value is passed as the first and only argument to the
+conditional power function. For illustration purposes, we consider the
+exemplary conditional power function <span class="math inline">\(CP(p_1)
+= \Phi(1-p_1)\)</span>, which is decreasing in the first-stage p-value
+<span class="math inline">\(p_1\)</span>:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>myConditionalPowerFunction <span class="ot">&lt;-</span> <span class="cf">function</span>(firstStagePValue) {</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">pnorm</span>(<span class="dv">1</span> <span class="sc">-</span> firstStagePValue))</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>}</span></code></pre></div>
+<p>A simple plot shows the properties of this function:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.01</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="fu">plot</span>(p1, <span class="fu">myConditionalPowerFunction</span>(p1), <span class="at">type =</span> <span class="st">&quot;l&quot;</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="fu">myConditionalPowerFunction</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)), <span class="at">col =</span> <span class="st">&quot;blue&quot;</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<p>For small first-stage p-values, the conditional power function leads
+to values just above 0.8 and approaches 0.5 as the first-stage p-value
+becomes larger. As above, we will use <span class="math inline">\(\alpha
+= 0.025\)</span>, <span class="math inline">\(\alpha_1 =
+0.000158\)</span> and <span class="math inline">\(\alpha_0 =
+0.5\)</span>. Implementing this in a design object is
+straightforward:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>trialDesignConditionalPowerFunction <span class="ot">&lt;-</span> </span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  <span class="fu">getDesignOptimalConditionalErrorFunction</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.025</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>    <span class="at">alpha1 =</span> <span class="fl">0.000158</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>    <span class="at">alpha0 =</span> <span class="fl">0.5</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>    <span class="at">conditionalPowerFunction =</span> myConditionalPowerFunction,</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>    <span class="at">delta1 =</span> <span class="fl">0.25</span>,</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>    <span class="at">useInterimEstimate =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>    <span class="at">firstStageInformation =</span> <span class="dv">100</span>,</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>    <span class="at">likelihoodRatioDistribution =</span> <span class="st">&quot;maxlr&quot;</span></span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>  )</span></code></pre></div>
+<p>Plotting the optimal conditional error function resulting from this
+design yields a seemingly normal function:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">plot</span>(trialDesignConditionalPowerFunction, <span class="at">type =</span> <span class="dv">1</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<p>The merits of using a conditional power function become more apparent
+when plotting the second-stage information resulting from the
+design:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">plot</span>(trialDesignConditionalPowerFunction, <span class="at">type =</span> <span class="dv">2</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<p>This second plot shows that the second-stage information required to
+achieve the conditional power (function) first increases in the
+first-stage p-value, reaches a maximum and then decreases as the
+first-stage evidence becomes weaker. This is different to a design with
+a constant conditional power, for which the second-stage information
+function is always non-decreasing (and typically, increasing) in the
+first-stage p-value. Using a decreasing conditional power function thus
+allows for potential savings in first-stage information in case of weak
+first-stage evidence.</p>
+<p>The application of <em>either</em> constraints <em>or</em> an interim
+estimate for the treatment effect is possible in combination with a
+conditional power function, however the combination of all three methods
+may lead to complications further elaborated in the next section.</p>
+</div>
+<div id="limitations" class="section level1">
+<h1>Limitations</h1>
+<p>The <code>optconerrf</code> package provides support for each of the
+three methods detailed above and for each combination of up to two
+methods. However, using all three of them simultaneously may lead to
+issues.</p>
+<p>To illustrate this, presume we wish to implement a design with:</p>
+<ul>
+<li><span class="math inline">\(\alpha = 0.025\)</span>, <span class="math inline">\(\alpha_1 = 0.000158\)</span>, <span class="math inline">\(\alpha_0 = 0.5\)</span></li>
+<li>maximum likelihood ratio</li>
+<li>first-stage information <span class="math inline">\(I_1 =
+100\)</span></li>
+<li>second-stage information constraint <span class="math inline">\(I_{2,\min} = 50\)</span></li>
+<li>conditional power function <span class="math inline">\(CP(p_1)=\Phi(1-p_1)\)</span></li>
+<li>an interim estimate with <span class="math inline">\(\Delta_{1,\min}=0.25\)</span></li>
+</ul>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>combinedDesign <span class="ot">&lt;-</span> </span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>  <span class="fu">getDesignOptimalConditionalErrorFunction</span>(</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.025</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>    <span class="at">alpha1 =</span> <span class="fl">0.000158</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>    <span class="at">alpha0 =</span> <span class="fl">0.5</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>    <span class="at">conditionalPowerFunction =</span> myConditionalPowerFunction,</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>    <span class="at">delta1Min =</span> <span class="fl">0.25</span>,</span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>    <span class="at">useInterimEstimate =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>    <span class="at">firstStageInformation =</span> <span class="dv">100</span>,</span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>    <span class="at">likelihoodRatioDistribution =</span> <span class="st">&quot;maxlr&quot;</span>,</span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a>    <span class="at">minimumSecondStageInformation =</span> <span class="dv">50</span></span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a>  )</span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a><span class="co">#&gt; Warning in .Object$initialize(...): Use of conditional power function, interim</span></span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a><span class="co">#&gt; estimate and information constraints may lead to non-monotone conditional error</span></span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a><span class="co">#&gt; function.</span></span></code></pre></div>
+<p>Plotting the optimal conditional error function resulting from this
+design shows a non-monotone function:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">plot</span>(combinedDesign)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAkAAAAGACAMAAAByRC0tAAAAvVBMVEUAAAAAADoAAGYAAP8AOpAAZrYzMzM6AAA6ADo6AGY6kNtNTU1NTW5NTY5NbqtNjshmAABmADpmtrZmtv9uTU1uTW5uTY5ubqtuq+SOTU2OTW6OTY6OyP+QOgCQkDqQkGaQtpCQ27aQ2/+rbk2rbm6rbo6ryKur5P+2ZgC22/+2///Ijk3I///bkDrb/9vb///kq27k///r6+v/AAD/tmb/yI7/25D/27b/29v/5Kv//7b//8j//9v//+T////mCbsVAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAR30lEQVR4nO2dDVvbOB7EQ7ssV9zS7nXbQhuud9BuuCbcwha4CyH6/h/rLFvxG06kWJY8/2TmeXYVXMaaKD/04jjKSFGUh0ZDB6BkiwBRXiJAlJcIEOUlAkR5iQBRXuoM0K/UfssboPbDf3U9n491X5xIcQMB9PJl1/NBtY5dP3/GrxOqiQiQn5MAmZJDmCAnUlwCJNCJFJcACXQixSVAAp1IcQmQQCdSXAIk0IkUl8t4PyeX8aYkQN1EgEy5EaD5x1lWLs6Sk9uiqJ/ArToXAbUOqBMprgtA98mbDKDl5VjdvF0VjRO4VecioNYBdSLFdQBo+vqPvAdafJnpzsgUjRO4VecioNYBdSLF3WYIm3+6VYvPE1MocyvHX20ajUatx6ld0zYA3Z9k5JiiQWBdKUCbTrhRQH9eoE6kuF49UPUEdRGgkE6kuNsAtMUc6OXLPQGIy3hTugC0vDzNV2Gn1lUYAQpYJ1QTOQOk/3O/DsQhLKQTKW6gK9EEKKQTKS4BEuhEikuABDqR4hIggU6kuARIoBMpbrDbOfYEIC7jTUmAuokAmZJDmCAnUlwCJNCJFJcACXQixSVAAp1IcQmQQCdSXAIk0IkUl8t4PyeX8aYkQN1EgEzJIUyQEykuARLoRIpLgAQ6keISIIFOpLgESKATKS4BEuhEistlvJ+Ty3hTEqBuIkCm5BAmyIkUlwAJdCLFJUACnUhxCZBAJ1JcAiTQiRSXAAl0IsXlMt7PyWW8KQlQNxEgU3IIE+REiusPUOvendyldV/EHkigEykuARLoRIpLgAQ6keISIIFOpLhcxvs5uYw3JQHqJgJkSg5hgpxIcQmQQCdSXAIk0IkUlwAJdCLFJUACnUhxCZBAJ1JcLuP9nFzGm5IAdRMBMiWHMEFOpLgESKATKS4BEuhEikuABDqR4hIggU6kuARIoBMpLpfxfk4u401JgLqJAJmSQ5ggJ1JcAiTQiRSXAAl0IsUlQAKdSHEJkEAnUlwCJNCJFJfLeD8nl/GmJEDdRIBMWX29n87fu5+XQ1h8J1LcNoAe3xEgaCdS3NYh7PqXP53PS4DiO5HitvdAo0wvfmQ/Ls6Sk1v94CbRGmflm1njBHURoJBOpLj2SfTyMkXm7eqn+5Sl6bjlBHURoJBOpLh2gBZfZmr+0XQ4i88Ttfw2aTlBXQQopBMpbjtA13oEO84fzz/dZtxk0l1ROqTpgUybtVq3XkyX8ZE3exxIP38OnWBgtU+i9ezn8V1OkB60VgBl5fxDtRfidaDodUI10YZl/F0+ia72QPf5bDpVMQ/iEBbfiRTXDlB1DjQ9Xf0OARrQiRTXPoQtL09Xq7B84NLd0PI7l/HDOZHi2ifR5jqQ7oTMSHaTJK8nzRPURYBCOpHi8nYOgU6kuHwzVaATKW6gN1O5jA9YJ1QTBXozlQAFrBOqiRzeTN0sDmHxnUhxOYkW6ESKy0m0QCdSXN6RKNCJFJd3JAp0IsXlJFqgEykuP9bj5+Qy3pQEqJsIkCmL1zubQWd3ctxxCAN1IsUlQAKdSHEJkEAnUlwCJNCJFJcACXQixSVAAp1IcQMBxGV8wDqhmqgFoNFKBMguAmRK3s4hyIkUlwAJdCLFJUACnUhxCZBAJ1JcAiTQiRSXAAl0IsXlMt7PyWW8KXk/UDcRIFNyCBPkRIrbCtDDEe+JRnYixW3/XNjx0/l7xw/3EKD4TqS46z4XdnWs7pw+3EOA4juR4q4D6PrQ9d341r07U4Ai7xZKDaPWOdBVRo/bxwvZA8V3IsVtBSidBKmr0cGFy3m5jI9eJ1QT8TqQn5MAmZLXgQQ5keLyOpBAJ1Lc9utAh+7nJUDxnUhxuT+QQCdSXO5QJtCJFLd1DuR2CbF+groIUEgnUtxAG0xxGR+wTqgm4nUgPycBMiWvAwlyIsV1+LaezSJA8Z1Ice3fF2YRAYrvRIpr/8ZCiwhQfCdSXAIk0IkUl0OYQCdS3ECTaC7jA9YJ1US8DuTnJECm5HUgQU6kuG1b3PXwVoYPQUCtA+pEihuoByJAIZ1IcQMt4wlQSCdSXAIk0IkU9zlA18X2Lk43thKg+E6kuOG+N34/AOIy3pT9XwciQKHqhGoiLuMFOpHichkv0IkUlwAJdCLFDbTJJgEK6USKu+l2Do8dyghQSCdSXF5IFOhEihsIIC7jA9YJ1UQOdyQuzpKT2+zRTZIkb2aVA4oAEaBc9Zf7Ts+hzRRoeTlWN2+zh9Nx44DiEMYhLNf6l3vxZabmH2fpo+W3Sf1A9QQNEaCATqS4doDmn27V4rNGJx26kmRcOfCrVvvmndymdU9k36Hs/mTFy/zDRPdC5YEqgQ2xBwroRIpr36Gs7HAyTcf1AwQovhMprv12jvqUJwWIc6ChnUhx7TuULS9PzaJLj13L77PyQPUEdXEZH7BOqCZy2KEsv+yj+5ybJHk9UbwOVBEBMmXPO5RxCAvpRIrL2zkEOpHiEiCBTqS4gTZXIEAhnUhxA23vQoBCOpHi8n4ggU6kuLwfyM/JZbwpex7CCFDAOqGaiJNogU6kuFzGC3QixSVAAp1IcVsAyubQT+dO39lMgAhQrvLlfjjKJz9Xbt/5RIDiO5HiPgfo6rD5YKMIUHwnUty23TnMI14HchCX8aYkQN1EgExZvNxP56vrP9dO02gOYfGdSHFb9kg0HU9J0kYRoPhOpLgty/irgwulhzK3dTwBiu9Eitt2ITH7WFhGkYMIUHwnUlxeiRboRIpLgAQ6keJym18/J5fxpiRA3USATMkhTJATKS4BEuhEisttfgU6keKyBxLoRIpLgAQ6keLadyiziADFdyLFbd8f6Pjp/L3XTvVcxgesE6qJ1n2w8OpY3XnczkGAAtYJ1UTrALo+dL2hrH3zTu7SuidqnQNdZfTwhjJUJ1LcVoD0vWRXjjd0EKD4TqS4XMYLdCLFJUACnUhxeR1IoBMprn2neou4jI9eJ1QT2Xeqt4gARa8TqonsO9VbxCEsvhMprsNO9ZtFgOI7keJyEi3QiRR3zZup7uclQPGdSHEDTaIJUEgnUlxOogU6keK2z4Fe+U6iuYwPWCdUEwX6uicCFLBOqCbie2ECnUhxCZBAJ1Lcti3u+I2F4E6kuOyBBDqR4vLrngQ6keISIIFOpLgtm2wWn4332Gicy/iAdUI1Ee8H8nMSIFNyEi3IiRR3wxfOuXVDBCi+Eykuv7VZoBMpLldhAp1IcQmQQCdS3PZ7ovWnmjmEwTqR4m66ncPp7TAu46PXCdVE3Cfaz0mATMnrQIKcSHH5bT0CnUhx135f2MPR6q2wxVlycps9mv+eJGOlbpIkeTNrnKAhAhTQiRT3OUCr1fvqHbHl5VjdvNWPFp8nav5hoqbjlhM0RIACOpHi2r8zdfFlpuYfdYdzrzGajpffJi0naIgABXQixbV/a/P8023W9+RKH6VDWjaSpWat9r0XucnmnsgO0P1JBaDl5Wk2ipW9EJfx0euEaiL7EFbtgRZnp+Yfi3kQAYpeJ1QT2SfR5RwoXYUV02cLQJwDhXQixd2wjDc9kR618lWY4UePacvvXMYP50SKu/ZCYvkuWH4dKO2E9PUfPX1Oy9eT5gkaIkABnUhx+VaGQCdSXAIk0IkUlwAJdCLFDXg7R67tzwjUOnZxGW/KYABtTxFQ69hFgEwZYAjrShBQ64A6keIGBUiVIG1xRqDWAXUixQ0NUPGD+xmBWgfUiRQ3CkDbrcmAWgfUiRSXAAl0IsWNBpB7BUCtA+pEihtyGV/5eWcB4jLelASomwiQKUMMYet/3Cig1gF1IsWNBNA2XRBQ64A6keISIIFOpLgRAXKtAqh1QJ1IcWMBtEUXBNQ6oE6kuARIoBMpbqRl/DZjGFDr2MVlvCmDA+TeBQG1jl0EyJTBhzD3LgiodUCdSHEj3hNNgPpyIsWNC5BTLUCtA+pEihvzUxkEqCcnUtzIALlUA9Q6oE6kuFE/F0aA+nEixY26za9bFwTUOnZxGW/KOPtEOxEE1Dp2ESBTRvposwtBQK0D6kSKG/uz8QSoBydS3AEAslUF1DqgTqS4/gC1b965dpfWEfdv3SnF397F2gcB/XmBOpHiDrA/kI0goNYBdSLFDbeMX2+xEATUOnZxGW/K3gHa5NlMEFDr2EWATNn3ELY56EaCgFoH1IkUdxiANhIE1DqgTqS4AwHU2HxhK+t67YsTKe5QAKn1G5cBtQ6oEynuYACtJwiodUCdSHGHA2gtQkCtA+pEijvIMr5QK0JArWMXl/GmHAag1k1cgVrHLgJkyiGGsLziZwgBtQ6oEynu4ABV9iTf3tq9UtFOpLgAAKkGQ0CtA+pEiosBUO2rEYBaB9SJFBcFIFVjqGMWoHYN6kSKCwSQanxFy/Z2oHYN6kSKO/AyvkWj7hRxGR/fiQdQmnTUlLOze50dRYBMiTGEVa3PKOIHggatVBxAmVoo2kASULsGdSLFBQco1xqMnqEE1K5BnUhxRQBktIGjXEDtGtSJFFcSQIWsJDnPmvzjEqBcogAq5Y7SZrCAXhHUSiUt4zuqK03unD0Xl/Gm3AWAnjv7R6opAmRKoUNYR2evDAVP26eVAMV0EiC7kwD5OQmQKQlQNxEgUxKgbiJApiRA3USATLmhGRZnyclt9VF5QIEv48M7f/4kQJnWN8Pycqxu3lYelQeqJ6iLAAWsE6qJ7AAtvszU/OOsfFQeqJ7ArToXAbWOXb1eUYJWZ4Dmn27V4vOkfFQe+FVr6G1Ch9XQL2s8rWkAO0D3JytezKPyQJXAhvalB9qfLihED1Q9QUN7AxDfjc/FOZAgJ1Jcl1XYabEKO81XYafWVdiOtA6oEymu83Ug3efwOtAz8XYOU+7m/UDhnQTIlHwrQ5ATKS4BEuhEikuABDqR4hIggU6kuARIoBMpLgES6ESKy2W8n5PLeFMSoG4iQKbsDhC13/IFaB1XPZ8PtlI+0VwESFCdiE+UAAmqE/GJ9g0QtWciQJSXCBDlJQJEeYkAUV7qBaDNH4IOpLKO+e9JMlbqJkmSNzOLq686TWVRn6iuUz/TCE9UFR+fsL2ifQBk+RB0GJV16I8azT9M1HQctsZqnaayuE9US384L/wTTesxiFpf0T4AsnwAKIzKOu71E5uOl98mNk9/dZrK4j5Rlf+xRHiiavr6j7xK6yvaB0CWjyCGUb2O9FHayWYjWZQ6TWXRn6juBSI8UVUMYdZXtA+ALB+CDqNaHfoja3oUC/zHWdZpKov9RLMywhNVBUDWV3QneqDF2ak5GnZ60Hhe03HsJ3pfTGSDz4Ni9kADz4HSVVjRmmHbtfG8puPYc6Dp6g8lGkBR5kCWD0GHUVmH4Uf/dS6/B30xyzpNZXGfqBm4IjxRVQBkfUV7vA607kPQgVRUWrk88jrwzKB8oqayqE90NYhEeKI5QC6vKK9EU14iQJSXCBDlJQJEeYkAUV4iQJSX9hmgp/N8H9L3D3+7qP/Lf/+tLAfc9ezku6X9Bui4/R+eveY+EBCgnRUB6kEESGWv8cOrf4xe/Hg4yka09P+rf6kcyB6nxx/fjQ7++epHNgK++GFO8HU0+uXPylmvzcmOs5NrhvT/KpZdEQFSOUBHh6azeDgq50TVA4/v3mdcPL47Th+/+PF0njquc2oejszPWvpYeurV71cAqlp2RfsNUDaHzjuJo/Tlfni16lBWAFUO/O/P/MGd7kJSMLIyoyRjrHTpMv1v9fsVgKqWXdF+A1TpgbJX/2o0OlTVaUvtwF1K28FF1oOkZF2PDH6rf1+RoU+b/VL++xWAqpZdEQFSFYCyCU426qhr80oXBx7fHWQ9SwFQZShaAZSb7n75z/lx8ftVgHZr9MpEgFQNoIyD+sLJHLjLOpWDfBxK/5c+LH6lNgCqx9/0HHv1+9Uh7GD3FmQESJUAZWykj4ppSvWAfvUfjg4uykl0SohBojaJ1gPfoSp+P7Mfp5UdXFQtuyICpCo9UD5rMQSoxoF0PnTwr5QkvYz/+iJfxh+s5s1fR6OCn9SlATS/n82p0xX933+7qFp2RfsMkIfu6rOZHb9YuEkEaFvpIagyXGUiQJS79FKrzg8BoqiOIkCUlwgQ5SUCRHmJAFFeIkCUlwgQ5aX/Ay2U89MhWuPtAAAAAElFTkSuQmCC" /><!-- --></p>
+<p>This comes from the fact that now, the constraint functions are more
+difficult to handle than before.</p>
+<p>We see that:</p>
+<p><span class="math display">\[
+\alpha_{2,\min}(p_1) = \Phi(\Phi^{-1}(CP(p_1)) -
+\tilde{\Delta}_1(p_1)\sqrt{I_{2,\max}})
+\]</span> and</p>
+<p><span class="math display">\[
+\alpha_{2,\max}(p_1) = \Phi(\Phi^{-1}(CP(p_1)) -
+\tilde{\Delta}_1(p_1)\sqrt{I_{2,\min}})
+\]</span></p>
+<p>may not be monotone in <span class="math inline">\(p_1\)</span>,
+because both <span class="math inline">\(CP(p_1)\)</span> and <span class="math inline">\(\tilde{\Delta}_1(p_1)\)</span> are non-increasing
+in <span class="math inline">\(p_1\)</span>. We can no longer use the
+workaround of plugging in <span class="math inline">\(\Delta_{1,\min}\)</span> (respectively, <span class="math inline">\(\Delta_{1, \max}\)</span>) for the interim
+estimate, because it is no longer guaranteed that the maximum
+(respectively, minimum) second-stage information is achieved for this
+effect size (due to the conditional power function).</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

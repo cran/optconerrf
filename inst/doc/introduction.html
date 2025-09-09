@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Introduction to the ‘optconerrf’ package</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Introduction to the ‘optconerrf’
+package</h1>
+
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(optconerrf)</span></code></pre></div>
+<div id="purpose-of-the-package" class="section level1">
+<h1>Purpose of the package</h1>
+<p>The R package <code>optconerrf</code> can be used to derive the
+optimal conditional error function proposed by Brannath &amp; Bauer
+(2004), which minimises the expected second-stage sample size of a
+two-stage adaptive clinical trial design while controlling for the
+conditional power. The package implements a more general approach by
+using the second-stage <em>information</em> rather than the second-stage
+<em>sample-size</em> and introduces extensions to the original
+methodology. In case the specification of the optimal conditional error
+function leads to a non-monotone function, the package can be used to
+implement the monotone transformation detailed in Brannath et
+al. (2024).</p>
+<p>This document provides a brief introduction to the central functions
+of the package. These are:</p>
+<ul>
+<li><code>getDesignOptimalConditionalErrorFunction()</code> to create a
+design which facilitates the use of the remaining functions</li>
+<li><code>getOptimalConditionalErrorFunction()</code> to calculate the
+optimal conditional error for a given first-stage p-value</li>
+<li><code>getSecondStageInformation()</code> to calculate the
+second-stage information required to reach the target conditional power
+for a given first-stage p-value</li>
+<li><code>getExpectedSecondStageInformation()</code> to calculate the
+expected second-stage information for a specification of the optimal
+conditional error function under an effect assumption</li>
+</ul>
+</div>
+<div id="prerequisites-to-computing-the-optimal-conditional-error-function" class="section level1">
+<h1>Prerequisites to computing the optimal conditional error
+function</h1>
+<p></p>
+<p>In <code>optconerrf</code>, the tested set of hypotheses is always
+assumed to be:</p>
+<p><span class="math display">\[
+H_0: \Delta \leq 0 \enspace \text{vs.} \enspace H_1: \Delta&gt;0,
+\]</span> where <span class="math inline">\(\Delta\)</span> is the
+effect size of interest.</p>
+<p>The optimal conditional error function is defined as:</p>
+<p><span class="math display">\[
+\alpha_2(p_1) = \psi \left( \frac{-e^{c_0}}{Q(p_1)}\right).
+\]</span></p>
+<p>The individual parameters and functions are the following:</p>
+<ul>
+<li><span class="math inline">\(p_1\)</span> is the first-stage
+p-value.</li>
+<li><span class="math inline">\(\psi\)</span> is the inverse of the
+function <span class="math inline">\(\nu&#39;(u) =
+-2\cdot(\Phi^{-1}(1-u)+\Phi^{-1}(CP))/\phi(\Phi^{-1}(1-u))\)</span>. For
+<span class="math inline">\(\psi\)</span>, no closed form is available
+and its solution is found through the <code>uniroot()</code> function in
+<code>optconerrf</code>.</li>
+<li><span class="math inline">\(c_0\)</span> is the level constant,
+required for the optimal conditional error function to preserve the
+overall type I error rate.</li>
+<li><span class="math inline">\(Q(p_1)=l(p_1)/\Delta_1^2\)</span> is the
+ratio of the likelihood ratio <span class="math inline">\(l(p_1)\)</span> of <span class="math inline">\(p_1\)</span> and an effect assumption <span class="math inline">\(\Delta_1\)</span> at which the conditional power
+<span class="math inline">\(CP\)</span> should be reached. The
+likelihood ratio requires an assumption about the true treatment effect,
+denoted <span class="math inline">\(\vartheta\)</span>. This is the
+effect assumption under which the second-stage information is
+minimised.</li>
+</ul>
+<p>Note that <span class="math inline">\(\vartheta\)</span> denotes a
+non-centrality parameter rather than the corresponding mean difference
+<span class="math inline">\(\Delta\)</span>. The non-centrality
+parameter <span class="math inline">\(\vartheta\)</span> is proportional
+to <span class="math inline">\(\Delta\)</span> and additionally takes
+into account the first-stage information <span class="math inline">\(I_1\)</span> of the trial. It is calculated
+as:</p>
+<p><span class="math display">\[
+\vartheta = \Delta\cdot \sqrt{I_1}.
+\]</span></p>
+<p>In <code>optconerrf</code>, the treatment effect for the conditional
+power can be specified either as the mean difference <code>delta1</code>
+or the non-centrality parameter <code>ncp1</code>, corresponding to
+<span class="math inline">\(\vartheta_1 = \Delta_1 \cdot
+\sqrt{I_1}\)</span>.</p>
+<p>The <code>optconerrf</code> package is based on a design object which
+contains the required specifications of the optimal conditional error
+functions. This object is created by the function
+<code>getDesignOptimalConditionalErrorFunction()</code> and can be
+simply passed to other functions instead of specifying each argument
+separately. The following section explains how to derive the design
+object.</p>
+</div>
+<div id="creating-the-design-object" class="section level1">
+<h1>Creating the design object</h1>
+<p>For the creation of a design object, the following parameters are
+required and discussed in more detail below:</p>
+<ul>
+<li>Overall type I error rate and early stopping boundaries</li>
+<li>Effect for likelihood ratio</li>
+<li>Conditional power</li>
+<li>Effect for conditional power</li>
+<li>First-stage information</li>
+<li>Optional: Constraints providing minimum and maximum conditional
+error (or maximum and minimum second-stage information,
+respectively)</li>
+</ul>
+<p>In addition to these arguments, which must be specified by the user,
+the following fields are automatically calculated and added to the
+design object:</p>
+<ul>
+<li>Level constant</li>
+<li>Monotonisation constants to ensure a non-increasing conditional
+error function (if necessary and not explicitly inhibited by the
+user)</li>
+</ul>
+<div id="overall-type-i-error-rate-and-early-stopping-boundaries" class="section level2">
+<h2>Overall type I error rate and early stopping boundaries</h2>
+<p>The overall type I error rate of the design, denoted <span class="math inline">\(\alpha\)</span>, is specified to
+<code>getDesignOptimalConditionalErrorFunction()</code> by the argument
+<code>alpha</code>. Early stopping boundaries <span class="math inline">\(\alpha_1\)</span> and <span class="math inline">\(\alpha_0\)</span> are specified via the respective
+arguments <code>alpha1</code> and <code>alpha0</code>, with the stopping
+rules:</p>
+<ul>
+<li>Stop and reject <span class="math inline">\(H_0\)</span> after the
+first stage if <span class="math inline">\(p_1 \leq
+\alpha_1\)</span>.</li>
+<li>Stop and fail to reject <span class="math inline">\(H_0\)</span>
+after the first stage if <span class="math inline">\(p_1 &gt;
+\alpha_0\)</span>.</li>
+</ul>
+<p>Note that <span class="math inline">\(\alpha_0\)</span> is a binding
+futility boundary, i.e., it is not permitted to continue the trial in
+case <span class="math inline">\(p_1&gt;\alpha_0\)</span>. Designs with
+<span class="math inline">\(\alpha_1 = 0\)</span> and/or <span class="math inline">\(\alpha_0 = 1\)</span>, i.e., designs with no early
+efficacy and/or futility stopping, are permitted.</p>
+</div>
+<div id="effect-for-likelihood-ratio" class="section level2">
+<h2>Effect for likelihood ratio</h2>
+<p>The likelihood ratio of the first-stage p-value <span class="math inline">\(p_1\)</span> for a normally distributed test
+statistic with true non-centrality parameter <span class="math inline">\(\vartheta=\Delta \cdot \sqrt{I_1}\)</span>
+according to Hung et al. (1997) is calculated as:</p>
+<p><span class="math display">\[
+l(p_1) = e^{\Phi^{-1}(1-p_1)\cdot \vartheta -\frac{\vartheta^2}{2}}.
+\]</span></p>
+<p>To use a fixed effect for the likelihood ratio in the specification
+of the optimal conditional error function,
+<code>likelihoodRatioDistribution=&quot;fixed&quot;</code> must be specified to
+<code>getDesignOptimalConditionalErrorFunction()</code>. In addition,
+the effect size <span class="math inline">\(\Delta\)</span> must be
+provided on the <strong>mean difference scale</strong> via the argument
+<code>deltaLR.</code> How to specify the first-stage information <span class="math inline">\(I_1\)</span> is elaborated in more detail
+below.</p>
+<p>Selecting a single value for <code>deltaLR</code> (and consequently,
+<span class="math inline">\(\vartheta\)</span>) may however provide an
+inefficient design under misspecification and instead, one may wish to
+use weighted alternatives for this parameter.</p>
+<p>A discrete weighting of the parameter <span class="math inline">\(\vartheta\)</span> for the likelihood ratio is
+achieved by specifying multiple values for <span class="math inline">\(\Delta\)</span> via <code>deltaLR</code>. The
+respective weights can be provided by <code>weightsDeltaLR</code> and
+are assumed to be equal if not explicitly specified. An exemplary
+specification could be <code>deltaLR = c(0, 0.5, 1)</code> and
+<code>weightsDeltaLR = c(0.25, 0.25, 0.5)</code>. Note that
+<code>likelihoodRatioDistribution = &quot;fixed&quot;</code> must still be
+specified in this case.</p>
+<p>The weighting of values for <span class="math inline">\(\vartheta\)</span> may also be done via a
+distributional assumption, i.e., a prior density <span class="math inline">\(u(\vartheta)\)</span>. The general form of the
+likelihood ratio is then:</p>
+<p><span class="math display">\[
+l(p_1) = \int_{-\infty}^{\infty}e^{\Phi^{-1}(1-p_1)\vartheta - \vartheta
+^2/2}u(\vartheta)d\vartheta.
+\]</span></p>
+<p>Currently, a normal, exponential and uniform prior density <span class="math inline">\(u(\vartheta)\)</span> for <span class="math inline">\(\vartheta\)</span> are implemented.</p>
+<p>A normal prior is specified via
+<code>likelihoodRatioDistribution = &quot;normal&quot;</code> and the mean
+<code>deltaLR</code> and standard deviation <code>tauLR</code>. The use
+of an exponential prior is possible by
+<code>likelihoodRatioDistribution = &quot;exp&quot;</code> and requires the
+specification of its mean <code>kappaLR</code> (corresponding to the
+inverse of the rate parameter <span class="math inline">\(\lambda\)</span>). A uniform prior can be used
+with <code>likelihoodRatioDistribution = &quot;unif&quot;</code> and
+<code>deltaMaxLR</code> specifies the maximum of its support [0,
+<code>deltaMaxLR</code>]. It is also possible to use the data-driven
+maximum likelihood via
+<code>likelihoodRatioDistribution = &quot;maxlr&quot;</code>. In this approach,
+the effect size <span class="math inline">\(\vartheta\)</span> is
+estimated from the data and used in the likelihood ratio calculation,
+provided it is not smaller than 0. In this case, no additional
+parameters must be specified.</p>
+<p>The arguments <code>deltaLR</code>, <code>tauLR</code>,
+<code>kappaLR</code> and <code>deltaMaxLR</code> must be specified on
+the mean difference scale, i.e., without accounting for the first-stage
+information.</p>
+</div>
+<div id="conditional-power" class="section level2">
+<h2>Conditional power</h2>
+<p>The conditional power to be achieved at a certain planning
+alternative is provided to
+<code>getDesignOptimalConditionalErrorFunction()</code> by the argument
+<code>conditionalPower</code>. Instead of a fixed value, a user-defined
+conditional power function may also be provided by the argument
+<code>conditionalPowerFunction</code>. This function should be specified
+in a way that it calculates the target conditional power from the
+first-stage p-value. Internally, the conditional power function is
+provided with the first-stage p-value as its unnamed first and only
+argument. Furthermore, it should generally be non-increasing in the
+first-stage p-value. This is checked when initialising the design object
+(by using a grid of values) and a warning is displayed if the
+conditional power function is increasing. For this purpose, the
+conditional power function should be able to handle vectors in its
+argument.</p>
+</div>
+<div id="effect-for-conditional-power" class="section level2">
+<h2>Effect for conditional power</h2>
+<p>The optimal conditional error function controls for the conditional
+power of a design at a fixed point alternative or at an interim estimate
+of the treatment effect. To use a fixed point alternative,
+<code>useInterimEstimate=FALSE</code> must be specified as well as a
+value for the point alternative via <code>delta1</code> (mean difference
+scale) or <code>ncp1</code> (non-centrality parameter scale). Apart from
+a fixed effect, the treatment effect at which the conditional power
+should be achieved can also be estimated from the first-stage data. In
+this case, it is necessary that a lower limit for this interim estimate
+is specified, as treatment effects <span class="math inline">\(\Delta_1
+\leq 0\)</span> (respectively, <span class="math inline">\(\vartheta_1
+\leq 0\)</span>) belong to the null hypothesis and cannot be powered
+for. If <code>useInterimEstimate=TRUE</code> is specified, this lower
+limit must be provided via <code>delta1Min</code> or
+<code>ncp1Min</code>. Furthermore, one may wish to deselect overly large
+interim treatment effect estimates by imposing an upper limit on the
+estimator. This can be done by using the arguments
+<code>delta1Max</code> or <code>ncp1Max</code>, but is not required.</p>
+</div>
+<div id="first-stage-information" class="section level2">
+<h2>First-stage information</h2>
+<p>The first-stage information of the trial design must be specified to
+allow for calculations between the mean difference and non-centrality
+parameter scale. It is provided to the design object via
+<code>firstStageInformation</code>.</p>
+<p>Listed below are some examples for the calculation between
+information (<span class="math inline">\(I_1\)</span>) and sample
+size:</p>
+<p>One-sample z-test with <span class="math inline">\(n\)</span> total
+patients: <span class="math inline">\(I_1 = \frac{n}{\sigma^2}\)</span>,
+where <span class="math inline">\(\sigma^2\)</span> is the variance of
+an individual observation</p>
+<p>Balanced two-sample z-test with <span class="math inline">\(n_1\)</span> patients per group: <span class="math inline">\(I_1 =
+\frac{1}{2}\cdot\frac{n_1}{\sigma^2}\)</span>, where <span class="math inline">\(\sigma^2\)</span> is the common variance</p>
+<p>General two-sample z-test with <span class="math inline">\(n_1\)</span>, <span class="math inline">\(n_2\)</span> patients per group: <span class="math inline">\(I_1 =
+1/(\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2})\)</span>, where <span class="math inline">\(\sigma_1^2\)</span>, <span class="math inline">\(\sigma_2^2\)</span> are the group-wise
+variances</p>
+</div>
+<div id="optional-minimum-and-maximum-conditional-error" class="section level2">
+<h2>Optional: Minimum and maximum conditional error</h2>
+<p>In certain scenarios, it may be desirable to restrict the values that
+the optimal conditional error function can take by a minimum and/or
+maximum. For the function
+<code>getDesignOptimalConditionalErrorFunction()</code>, this can be
+achieved by specifying values for the arguments
+<code>minimumConditionalError</code> and
+<code>maximumConditionalError</code>. The default values for the
+arguments are <code>minimumConditionalError = 0</code> and
+<code>maximumConditionalError = 1</code>, corresponding to no
+restrictions. Alternatively, the second-stage information may be
+restricted by using the arguments
+<code>minimumSecondStageInformation</code> and
+<code>maximumSecondStageInformation</code>. If constraints are specified
+on both scales, the more restrictive constraint is applied.</p>
+</div>
+<div id="calculating-the-level-constant" class="section level2">
+<h2>Calculating the level constant</h2>
+<p>The level constant, required for the optimal conditional error
+function to meet the level condition, is automatically calculated
+whenever a design is created using
+<code>getDesignOptimalConditionalErrorFunction()</code>. The level
+constant ensures that the optimal conditional error function meets the
+overall type I error rate of the design and requires that: <span class="math display">\[
+\alpha = \alpha_1 + \int_{\alpha_1}^{\alpha_0}\alpha_2(p_1)dp_1.
+\]</span></p>
+<p>This is done via the function <code>getLevelConstant()</code>, which
+extracts the required parameters from the specified design object. This
+function uses the <code>uniroot()</code> function to search for the
+level constant, by default on an interval from 0 to 10. In certain
+cases, in particular for design specifications with very large or very
+small non-centrality parameters, the level constant may lie outside of
+this interval. For such designs, <code>uniroot()</code> produces an
+error. The search interval can be manually changed by tempering with the
+arguments <code>levelConstantMinimum</code> and
+<code>levelConstantMaximum</code>. Typically, designs with very large
+non-centrality parameters will require a smaller level constant (i.e., a
+reduction of <code>levelConstantMinimum</code>) and designs with very
+small non-centrality parameters will require a larger level constant
+(i.e., an increase of <code>levelConstantMaximum</code>).</p>
+<p>Note that imposing inappropriate restrictions on the optimal
+conditional error function via <code>minimumConditionalError</code> and
+<code>maximumConditionalError</code> or
+<code>maximumSecondStageInformation</code> and
+<code>minimumSecondStageInformation</code> may make it impossible to
+calculate a level constant which fulfills the level condition.</p>
+</div>
+<div id="calculating-monotonisation-constants" class="section level2">
+<h2>Calculating monotonisation constants</h2>
+<p>The use of a conditional error function which is increasing for any
+first-stage p-values is discouraged due to a type I error inflation in
+the case of a conservatively distributed <span class="math inline">\(p_1\)</span> and because the resulting power
+function of the trial may be decreasing in the true effect size (Koyama
+et al., 2005). Because the framework of the optimal conditional error
+function may however lead to an increasing conditional error function
+for certain specifications, a non-increasing transformation may be
+required. To retain optimality, the non-monotone optimal conditional
+error function must be set to constant values on certain intervals. How
+to identify the constants and intervals is described in detail in
+Brannath et al. (2024).</p>
+<p>Whenever a design object is created using
+<code>getDesignOptimalCondtionalErrorFunction()</code>, the function
+<code>getMonotonisationConstants()</code> is internally called to
+identify the intervals and constants. If the specified design produces
+an optimal conditional error function which already is non-increasing in
+the first-stage p-value, no monotonisation is necessary. For
+illustration purposes, <code>optconerrf</code> also allows the user to
+skip the monotonisation process by setting
+<code>enforceMonotonicity=FALSE</code>. In this case, the resulting
+conditional error function may be increasing for some p-values. Note
+that generally, such a design should not be used for practical
+purposes.</p>
+</div>
+</div>
+<div id="using-the-design-object" class="section level1">
+<h1>Using the design object</h1>
+<p>As an example, we consider an adaptive design with overall type I
+error rate <code>alpha=0.025</code>, early rejection and futility
+boundaries <code>alpha1=0.0154</code> and <code>alpha0=0.5</code> with a
+target conditional power <code>conditionalPower=0.9</code> at a fixed
+alternative <code>delta1=0.25</code> (note that
+<code>useInterimEstimate=FALSE</code>). We assume a fixed effect of
+<code>deltaLR=0.25</code> for the calculation of the likelihood ratio
+(<code>likelihoodRatioDistribution=&quot;fixed&quot;</code>) and
+<code>firstStageInformation=50</code>. Note that this design
+approximates the original trial design used in Brannath &amp; Bauer
+(2004) and achieves an overall power of 90%.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>design <span class="ot">&lt;-</span> <span class="fu">getDesignOptimalConditionalErrorFunction</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="at">alpha =</span> <span class="fl">0.025</span>, <span class="at">alpha1 =</span> <span class="fl">0.0154</span>, <span class="at">alpha0 =</span> <span class="fl">0.5</span>, <span class="at">conditionalPower =</span> <span class="fl">0.9</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="at">delta1 =</span> <span class="fl">0.25</span>, <span class="at">likelihoodRatioDistribution =</span> <span class="st">&quot;fixed&quot;</span>, <span class="at">deltaLR =</span> <span class="fl">0.25</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="at">firstStageInformation =</span> <span class="dv">50</span>, <span class="at">useInterimEstimate =</span> <span class="cn">FALSE</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>)</span></code></pre></div>
+<p>Once the design object is created using
+<code>getDesignOptimalCondtionalErrorFunction()</code>, it can be easily
+passed to other functions of <code>optconerrf</code>. The design object
+is an instance of the class
+<code>TrialDesignOptimalConditionalError</code> and offers
+implementations of the generic functions <code>print()</code>,
+<code>plot()</code> and <code>summary()</code>. The <code>print()</code>
+function provides a comprehensive overview of user-specified parameters
+(such as early stopping boundaries and effect sizes) as well as
+internally calculated variables (such as the level constant):</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Comprehensive design output</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">print</span>(design)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt; Optimal Conditional Error Function Design: </span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt;  </span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt; General design parameters: </span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt;   Overall significance level: 0.025 </span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt;   First-stage efficacy boundary (p-value scale): 0.0154 </span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt;   Binding first-stage futility boundary (p-value scale): 0.5 </span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt; Conditional power specification: </span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt;   Target conditional power: 0.9 </span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt;   Alternative: 0.25 </span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt;   First-stage non-centrality parameter: 1.767767 </span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt;   First-stage information: 50 </span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt; Likelihood ratio specification: </span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt;   Fixed parameter(s) in likelihood ratio:  0.25 </span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="co">#&gt;   Parameter weights:  1 </span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co">#&gt; Level constant: </span></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="co">#&gt;   Constant: 7.964514 </span></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="co">#&gt;   Searched on interval: [0, 10]</span></span></code></pre></div>
+<p>The <code>plot()</code> function has 4 different modes of operation,
+which are specified via the argument <code>type</code>: Passing
+<code>design</code> and <code>type = 1</code> to the <code>plot()</code>
+function produces a plot visualising the optimal conditional error
+function resulting from the specification in <code>design</code> in
+relation to the first-stage p-value. As <code>type = 1</code> is also
+the default value, the argument can be omitted to achieve this function
+behaviour:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">plot</span>(design) <span class="co"># Plot of the optimal conditional error function</span></span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<p>Using <code>type = 2</code> produces a plot of the second-stage
+information resulting from the design specification in relation to the
+first-stage p-value. The second-stage information <span class="math inline">\(I_2(p_1)\)</span> of a first-stage p-value <span class="math inline">\(p_1\)</span> is calculated as:</p>
+<p><span class="math display">\[
+I_2(p_1) = \frac{\bigl( \Phi^{-1}(1-\alpha_2(p_1)) +
+\Phi^{-1}(CP)  \bigr)^2}{\Delta_1^2}.
+\]</span></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">plot</span>(design, <span class="at">type =</span> <span class="dv">2</span>) <span class="co"># Plot of the second-stage information</span></span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<p>The remaining plot types can be used to visualise the likelihood
+ratio <span class="math inline">\(l(p_1)\)</span>
+(<code>type = 3</code>) and the function <span class="math inline">\(Q(p_1)\)</span> (<code>type = 4</code>) resulting
+from the design specification and will not be shown here.</p>
+<p>To access individual fields of the object, e.g., the overall type I
+error rate (<code>alpha</code>) or the level constant
+(<code>levelConstant</code>) the following code can be used:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>design<span class="sc">$</span>alpha</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt; [1] 0.025</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>design<span class="sc">$</span>levelConstant</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt; [1] 7.964514</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="fu">print</span>(design<span class="sc">$</span>levelConstant, <span class="at">digits =</span> <span class="dv">12</span>) <span class="co"># For more precision</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt; [1] 7.96451445086</span></span></code></pre></div>
+</div>
+<div id="computing-the-optimal-conditional-error-function-and-second-stage-information" class="section level1">
+<h1>Computing the optimal conditional error function and second-stage
+information</h1>
+<p>Values for the optimal conditional error function are calculated
+using the function <code>getOptimalConditionalError()</code>. For this
+function, the p-value of the first stage (argument
+<code>firstStagePValue</code>) and a design object, created using
+<code>getDesignOptimalConditionalErrorFunction()</code>, must be
+provided.</p>
+<p>For the specification above, the optimal conditional error for an
+exemplary first-stage p-value of <code>0.1</code> can be calculated
+as:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">getOptimalConditionalError</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="at">firstStagePValue =</span> <span class="fl">0.1</span>, <span class="at">design =</span> design</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>)</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt; [1] 0.03136691</span></span></code></pre></div>
+<p>Multiple first-stage p-values may also be provided as a vector. For
+first-stage p-values with <span class="math inline">\(p_1 \leq
+\alpha_1\)</span> or <span class="math inline">\(p_1 &gt;
+\alpha_0\)</span>, a conditional error of 1 or 0 is returned,
+respectively.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">getOptimalConditionalError</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="at">firstStagePValue =</span> <span class="fu">c</span>(<span class="fl">0.0005</span>, <span class="fl">0.1</span>, <span class="fl">0.05</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>),</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="at">design =</span> design</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>)</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt; [1] 1.000000000 0.031366907 0.061042561 0.003081757 0.000000000</span></span></code></pre></div>
+<p>The calculation of the second-stage information is achieved in a
+similar fashion, using <code>getSecondStageInformation()</code>:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">getSecondStageInformation</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  <span class="at">firstStagePValue =</span> <span class="fl">0.1</span>, <span class="at">design =</span> design</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>)</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co">#&gt; [1] 158.0175</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="fu">getSecondStageInformation</span>(</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>  <span class="at">firstStagePValue =</span> <span class="fu">c</span>(<span class="fl">0.0005</span>, <span class="fl">0.1</span>, <span class="fl">0.05</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>),</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>  <span class="at">design =</span> design</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>)</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="co">#&gt; [1]   0.0000 158.0175 127.9281 258.6313   0.0000</span></span></code></pre></div>
+<p>Note that the second-stage information for first-stage p-values with
+<span class="math inline">\(p_1 \leq \alpha_1\)</span> or <span class="math inline">\(p_1 &gt; \alpha_0\)</span> is always 0, as the
+trial is stopped early for such results.</p>
+</div>
+<div id="calculation-of-expected-second-stage-information" class="section level1">
+<h1>Calculation of expected second-stage information</h1>
+<p></p>
+<p>With the function <code>getExpectedSecondStageInformation()</code>, a
+calculation of the expected second-stage information that a
+specification of the optimal conditional error function yields can be
+calculated. The calculation of the expected second-stage information
+<span class="math inline">\(\mathbb{E}(I_2)\)</span> is performed
+as:</p>
+<p><span class="math display">\[
+\mathbb{E}(I_2) = \int_{\alpha_1}^{\alpha_0} \frac{
+(\Phi^{-1}(1-\alpha_2(p_1)) + \Phi^{-1}(CP_{\Delta_1}))^2\cdot
+l(p_1)}{\Delta_1^2}dp_1.
+\]</span> The effect <span class="math inline">\(\Delta_1\)</span>
+provides the effect for which the conditional power <span class="math inline">\(CP_{\Delta_1}\)</span> is targeted. <span class="math inline">\(\Delta_1\)</span> is extracted from the design
+object and may depend on the interim data.</p>
+<p>The likelihood ratio <span class="math inline">\(l(p_1)\)</span> in
+this case represents the scenario under which the performance of a
+specific design is to be evaluated. For example, one may have specified
+a design assuming <span class="math inline">\(\Delta=0.25\)</span> as a
+fixed effect for the likelihood ratio (as above), but now wishes to
+investigate the performance of this design in case <span class="math inline">\(\Delta=0\)</span>, i.e., if the null hypothesis is
+true. This can be achieved by the following code:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">getExpectedSecondStageInformation</span>(</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="at">design =</span> design, <span class="at">likelihoodRatioDistribution =</span> <span class="st">&quot;fixed&quot;</span>, <span class="at">deltaLR =</span> <span class="dv">0</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>)</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co">#&gt; [1] 97.14428</span></span></code></pre></div>
+<p>The specification of the likelihood ratio under which to calculate
+the expected second-stage information is given by
+<code>likelihoodRatioDistribution = &quot;fixed&quot;</code> and the corresponding
+treatment effect is specified by <code>deltaLR = 0</code>.</p>
+<p>Alternatively, one may calculate the expected second-stage
+information of the design if it was correctly specified, i.e., for <span class="math inline">\(\Delta=0.25\)</span>:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">getExpectedSecondStageInformation</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  <span class="at">design =</span> design, <span class="at">likelihoodRatioDistribution =</span> <span class="st">&quot;fixed&quot;</span>, <span class="at">deltaLR =</span> <span class="fl">0.25</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>)</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co">#&gt; [1] 95.38173</span></span></code></pre></div>
+<p>A shortcut for the calculation of the expected second-stage
+information under correct specification is also available by omitting
+the arguments <code>likelihoodRatioDistribution</code> and
+<code>deltaLR</code>, in which case the likelihood ratio specification
+given in the design is extracted and used for the calculation.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">getExpectedSecondStageInformation</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  <span class="at">design =</span> design</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>)</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="co">#&gt; [1] 95.38173</span></span></code></pre></div>
+<p>Multiplying the respective information values by a factor of 2
+(approximately) yields the original results of Brannath &amp; Bauer
+(2004).</p>
+<p>In addition to calculating the expected second-stage information for
+a single fixed effect size (by specifying
+<code>likelihoodRatioDistribution = &quot;fixed&quot;</code> and a single value
+for <code>deltaLR</code>), it is also possible to provide multiple
+weighted fixed effect sizes (by specifying
+<code>likelihoodRatioDistribution = &quot;fixed&quot;</code>, multiple values for
+<code>deltaLR</code> and possibly respective weights with
+<code>weightsDeltaLR</code>) or to use a distributional assumption for
+the effect size in the likelihood ratio (by specifying one of
+<code>&quot;normal&quot;</code>, <code>&quot;exp&quot;</code> or <code>&quot;unif&quot;</code> for
+<code>likelihoodRatioDistribution</code> and the respective
+parameters).</p>
+</div>
+<div id="complementary-functions" class="section level1">
+<h1>Complementary functions</h1>
+<p>In addition to the core functions described above, the
+<code>optconerrf</code> package provides additional functions which
+relate to the operating characteristics of the design. An exact
+calculation of the overall power of a given design can be achieved by
+using the function <code>getOverallPower()</code>:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">getOverallPower</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>  design, <span class="at">alternative =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.25</span>))</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="co">#&gt; Power calculation results </span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co">#&gt;  </span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="co">#&gt;  Alternative:  0.00, 0.25 </span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co">#&gt;  First-stage futility:  0.50000000, 0.03854994 </span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co">#&gt;  First-stage efficacy:  0.0154000, 0.3475734 </span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="co">#&gt;  Overall power:  0.0250000, 0.9000624</span></span></code></pre></div>
+<p>The argument <code>alternative</code> may consist of multiple
+elements and provides the effect sizes for which the overall power
+should be calculated.</p>
+<p>In addition to an exact calculation via
+<code>getOverallPower()</code>, the same operating characteristics may
+be simulated using the function <code>getSimulationResults()</code>.</p>
+<p>The <code>summary()</code> function is also implemented for objects
+of class <code>TrialDesignOptimalConditionalError</code> and combines
+selected results from <code>getExpectedSecondStageInformation()</code>
+and <code>getOverallPower()</code> to provide a general overview of the
+design performance:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">summary</span>(design)</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="co">#&gt; Summary of the Optimal Conditional Error Function Design: </span></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="co">#&gt;  </span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="co">#&gt; General design parameters: </span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="co">#&gt;   Overall significance level: 0.025 </span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="co">#&gt;   First-stage efficacy boundary (p-value scale): 0.0154 </span></span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a><span class="co">#&gt;   Binding first-stage futility boundary (p-value scale): 0.5 </span></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a><span class="co">#&gt; Second-stage information: </span></span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a><span class="co">#&gt;   Expected second-stage information (delta=0): 97.14428 </span></span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a><span class="co">#&gt;   Expected second-stage information (delta=delta1=0.25): 95.38173</span></span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a><span class="co">#&gt;   Expected second-stage information (Given likelihood ratio distr.): 95.38173 </span></span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a><span class="co">#&gt;   Expected second-stage information (delta=Mean of given likelihood ratio distr.=0.25): 95.38173</span></span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a><span class="co">#&gt;   Maximum second-stage information: 258.6313</span></span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a><span class="co">#&gt;  </span></span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a><span class="co">#&gt; Power and stopping probabilities: </span></span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="co">#&gt;   Conditional power (fixed): 0.9 </span></span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a><span class="co">#&gt;   Overall power (delta1=0.25): 0.9000624</span></span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a><span class="co">#&gt;   Efficacy stopping probability (delta1=0.25): 0.3475734</span></span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a><span class="co">#&gt;   Futility stopping probability (delta1=0.25): 0.03854994</span></span>
+<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a><span class="co">#&gt;   Overall power (delta1=Mean of given likelihood ratio distr.= 0.25): 0.9000624</span></span>
+<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a><span class="co">#&gt;   Efficacy stopping probability (delta1=Mean of given likelihood ratio distr.= 0.25): 0.3475734</span></span>
+<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a><span class="co">#&gt;   Futility stopping probability (delta1=Mean of given likelihood ratio distr.= 0.25): 0.03854994</span></span></code></pre></div>
+</div>
+<div id="references" class="section level1">
+<h1>References</h1>
+<p>Brannath, W. &amp; Bauer, P. (2004). Optimal conditional error
+functions for the control of conditional power. Biometrics, 60 (3),
+715–723. <a href="https://www.jstor.org/stable/3695393" class="uri">https://www.jstor.org/stable/3695393</a></p>
+<p>Brannath, W., Dreher, M., zur Verth, J., Scharpenberg, M. (2024).
+Optimal monotone conditional error functions. <a href="https://arxiv.org/abs/2402.00814" class="uri">https://arxiv.org/abs/2402.00814</a></p>
+<p>Hung, H. M. J., O’Neill, R. T., Bauer, P. &amp; Kohne, K. (1997). The
+behavior of the p-value when the alternative hypothesis is true.
+Biometrics. <a href="https://www.jstor.org/stable/2533093" class="uri">https://www.jstor.org/stable/2533093</a></p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

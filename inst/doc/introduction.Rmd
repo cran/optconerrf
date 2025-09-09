@@ -1,0 +1,367 @@
+---
+title: "Introduction to the 'optconerrf' package"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.dim = c(9, 6)
+)
+options(rmarkdown.html_vignette.check_title = FALSE)
+```
+
+```{r setup}
+library(optconerrf)
+```
+
+# Purpose of the package
+
+The R package `optconerrf` can be used to derive the optimal conditional error function proposed by Brannath & Bauer (2004), which minimises the expected second-stage sample size of a two-stage adaptive clinical trial design while controlling for the conditional power.
+The package implements a more general approach by using the second-stage *information* rather than the second-stage *sample-size* and introduces extensions to the original methodology.
+In case the specification of the optimal conditional error function leads to a non-monotone function, the package can be used to implement the monotone transformation detailed in Brannath et al. (2024).
+
+This document provides a brief introduction to the central functions of the package.
+These are:
+
+* `getDesignOptimalConditionalErrorFunction()` to create a design which facilitates the use of the remaining functions 
+* `getOptimalConditionalErrorFunction()` to calculate the optimal conditional error for a given first-stage p-value
+* `getSecondStageInformation()` to calculate the second-stage information required to reach the target conditional power for a given first-stage p-value
+* `getExpectedSecondStageInformation()` to calculate the expected second-stage information for a specification of the optimal conditional error function under an effect assumption
+
+# Prerequisites to computing the optimal conditional error function
+\label{section_ocef}
+
+In `optconerrf`, the tested set of hypotheses is always assumed to be:
+
+$$
+H_0: \Delta \leq 0 \enspace \text{vs.} \enspace H_1: \Delta>0,
+$$
+where $\Delta$ is the effect size of interest.
+
+The optimal conditional error function is defined as:
+
+$$
+\alpha_2(p_1) = \psi \left( \frac{-e^{c_0}}{Q(p_1)}\right).
+$$
+
+The individual parameters and functions are the following:
+
+* $p_1$ is the first-stage p-value.
+* $\psi$ is the inverse of the function $\nu'(u) = -2\cdot(\Phi^{-1}(1-u)+\Phi^{-1}(CP))/\phi(\Phi^{-1}(1-u))$. For $\psi$, no closed form is available and its solution is found through the `uniroot()` function in `optconerrf`.
+* $c_0$ is the level constant, required for the optimal conditional error function to preserve the overall type I error rate.
+* $Q(p_1)=l(p_1)/\Delta_1^2$ is the ratio of the likelihood ratio $l(p_1)$ of $p_1$ and an effect assumption $\Delta_1$ at which the conditional power $CP$ should be reached. The likelihood ratio requires an assumption about the true treatment effect, denoted $\vartheta$. This is the effect assumption under which the second-stage information is minimised.
+
+Note that $\vartheta$ denotes a non-centrality parameter rather than the corresponding mean difference $\Delta$.
+The non-centrality parameter $\vartheta$ is proportional to $\Delta$ and additionally takes into account the first-stage information $I_1$ of the trial.
+It is calculated as:
+
+$$
+\vartheta = \Delta\cdot \sqrt{I_1}.
+$$
+
+In `optconerrf`, the treatment effect for the conditional power can be specified either as the mean difference `delta1` or the non-centrality parameter `ncp1`, corresponding to $\vartheta_1 = \Delta_1 \cdot \sqrt{I_1}$.
+
+The `optconerrf` package is based on a design object which contains the required specifications of the optimal conditional error functions.
+This object is created by the function `getDesignOptimalConditionalErrorFunction()` and can be simply passed to other functions instead of specifying each argument separately.
+The following section explains how to derive the design object.
+
+# Creating the design object
+
+For the creation of a design object, the following parameters are required and discussed in more detail below:
+
+* Overall type I error rate and early stopping boundaries
+* Effect for likelihood ratio
+* Conditional power
+* Effect for conditional power
+* First-stage information
+* Optional: Constraints providing minimum and maximum conditional error (or maximum and minimum second-stage information, respectively)
+
+In addition to these arguments, which must be specified by the user, the following fields are automatically calculated and added to the design object:
+
+* Level constant
+* Monotonisation constants to ensure a non-increasing conditional error function (if necessary and not explicitly inhibited by the user)
+
+## Overall type I error rate and early stopping boundaries
+
+The overall type I error rate of the design, denoted $\alpha$, is specified to `getDesignOptimalConditionalErrorFunction()` by the argument `alpha`.
+Early stopping boundaries $\alpha_1$ and $\alpha_0$ are specified via the respective arguments `alpha1` and `alpha0`, with the stopping rules:
+
+* Stop and reject $H_0$ after the first stage if $p_1 \leq \alpha_1$.
+* Stop and fail to reject $H_0$ after the first stage if $p_1 > \alpha_0$.
+
+Note that $\alpha_0$ is a binding futility boundary, i.e., it is not permitted to continue the trial in case $p_1>\alpha_0$.
+Designs with $\alpha_1 = 0$ and/or $\alpha_0 = 1$, i.e., designs with no early efficacy and/or futility stopping, are permitted.
+
+## Effect for likelihood ratio
+
+The likelihood ratio of the first-stage p-value $p_1$ for a normally distributed test statistic with true non-centrality parameter $\vartheta=\Delta \cdot \sqrt{I_1}$ according to Hung et al. (1997) is calculated as:
+
+$$
+l(p_1) = e^{\Phi^{-1}(1-p_1)\cdot \vartheta -\frac{\vartheta^2}{2}}.
+$$
+
+To use a fixed effect for the likelihood ratio in the specification of the optimal conditional error function, `likelihoodRatioDistribution="fixed"` must be specified to `getDesignOptimalConditionalErrorFunction()`. In addition, the effect size $\Delta$ must be provided on the **mean difference scale** via the argument `deltaLR.`
+How to specify the first-stage information $I_1$ is elaborated in more detail below.
+
+Selecting a single value for `deltaLR` (and consequently, $\vartheta$) may however provide an inefficient design under misspecification and instead, one may wish to use weighted alternatives for this parameter.
+
+A discrete weighting of the parameter $\vartheta$ for the likelihood ratio is achieved by specifying multiple values for $\Delta$ via `deltaLR`.
+The respective weights can be provided by `weightsDeltaLR` and are assumed to be equal if not explicitly specified.
+An exemplary specification could be `deltaLR = c(0, 0.5, 1)` and `weightsDeltaLR = c(0.25, 0.25, 0.5)`.
+Note that `likelihoodRatioDistribution = "fixed"` must still be specified in this case.
+
+The weighting of values for $\vartheta$ may also be done via a distributional assumption, i.e., a prior density $u(\vartheta)$.
+The general form of the likelihood ratio is then:
+
+$$
+l(p_1) = \int_{-\infty}^{\infty}e^{\Phi^{-1}(1-p_1)\vartheta - \vartheta ^2/2}u(\vartheta)d\vartheta.
+$$
+
+Currently, a normal, exponential and uniform prior density $u(\vartheta)$ for $\vartheta$ are implemented.
+
+A normal prior is specified via `likelihoodRatioDistribution = "normal"` and the mean `deltaLR` and standard deviation `tauLR`.
+The use of an exponential prior is possible by `likelihoodRatioDistribution = "exp"` and requires the specification of its mean `kappaLR` (corresponding to the inverse of the rate parameter $\lambda$).
+A uniform prior can be used with `likelihoodRatioDistribution = "unif"` and `deltaMaxLR` specifies the maximum of its support [0, `deltaMaxLR`]. 
+It is also possible to use the data-driven maximum likelihood via `likelihoodRatioDistribution = "maxlr"`.
+In this approach, the effect size $\vartheta$ is estimated from the data and used in the likelihood ratio calculation, provided it is not smaller than 0.
+In this case, no additional parameters must be specified.
+
+The arguments `deltaLR`, `tauLR`, `kappaLR` and `deltaMaxLR` must be specified on the mean difference scale, i.e., without accounting for the first-stage information.
+
+## Conditional power
+
+The conditional power to be achieved at a certain planning alternative is provided to `getDesignOptimalConditionalErrorFunction()` by the argument `conditionalPower`.
+Instead of a fixed value, a user-defined conditional power function may also be provided by the argument `conditionalPowerFunction`.
+This function should be specified in a way that it calculates the target conditional power from the first-stage p-value.
+Internally, the conditional power function is provided with the first-stage p-value as its unnamed first and only argument.
+Furthermore, it should generally be non-increasing in the first-stage p-value.
+This is checked when initialising the design object (by using a grid of values) and a warning is displayed if the conditional power function is increasing.
+For this purpose, the conditional power function should be able to handle vectors in its argument.
+
+## Effect for conditional power
+
+The optimal conditional error function controls for the conditional power of a design at a fixed point alternative or at an interim estimate of the treatment effect.
+To use a fixed point alternative, `useInterimEstimate=FALSE` must be specified as well as a value for the point alternative via `delta1` (mean difference scale) or `ncp1` (non-centrality parameter scale).
+Apart from a fixed effect, the treatment effect at which the conditional power should be achieved can also be estimated from the first-stage data.
+In this case, it is necessary that a lower limit for this interim estimate is specified, as treatment effects $\Delta_1 \leq 0$ (respectively, $\vartheta_1 \leq 0$) belong to the null hypothesis and cannot be powered for. If `useInterimEstimate=TRUE` is specified, this lower limit must be provided via `delta1Min` or `ncp1Min`.
+Furthermore, one may wish to deselect overly large interim treatment effect estimates by imposing an upper limit on the estimator.
+This can be done by using the arguments `delta1Max` or `ncp1Max`, but is not required.
+
+## First-stage information
+
+The first-stage information of the trial design must be specified to allow for calculations between the mean difference and non-centrality parameter scale.
+It is provided to the design object via `firstStageInformation`.
+
+Listed below are some examples for the calculation between information ($I_1$) and sample size:
+
+One-sample z-test with $n$ total patients: $I_1 = \frac{n}{\sigma^2}$, where $\sigma^2$ is the variance of an individual observation
+
+Balanced two-sample z-test with $n_1$ patients per group: $I_1 = \frac{1}{2}\cdot\frac{n_1}{\sigma^2}$, where $\sigma^2$ is the common variance
+
+General two-sample z-test with $n_1$, $n_2$ patients per group: $I_1 = 1/(\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2})$, where $\sigma_1^2$, $\sigma_2^2$ are the group-wise variances 
+
+## Optional: Minimum and maximum conditional error
+
+In certain scenarios, it may be desirable to restrict the values that the optimal conditional error function can take by a minimum and/or maximum.
+For the function `getDesignOptimalConditionalErrorFunction()`, this can be achieved by specifying values for the arguments `minimumConditionalError` and `maximumConditionalError`.
+The default values for the arguments are `minimumConditionalError = 0` and `maximumConditionalError = 1`, corresponding to no restrictions.
+Alternatively, the second-stage information may be restricted by using the arguments `minimumSecondStageInformation` and `maximumSecondStageInformation`.
+If constraints are specified on both scales, the more restrictive constraint is applied.
+
+## Calculating the level constant
+
+The level constant, required for the optimal conditional error function to meet the level condition, is automatically calculated whenever a design is created using `getDesignOptimalConditionalErrorFunction()`.
+The level constant ensures that the optimal conditional error function meets the overall type I error rate of the design and requires that:
+$$
+\alpha = \alpha_1 + \int_{\alpha_1}^{\alpha_0}\alpha_2(p_1)dp_1.
+$$
+
+This is done via the function `getLevelConstant()`, which extracts the required parameters from the specified design object.
+This function uses the `uniroot()` function to search for the level constant, by default on an interval from 0 to 10.
+In certain cases, in particular for design specifications with very large or very small non-centrality parameters, the level constant may lie outside of this interval.
+For such designs, `uniroot()` produces an error. The search interval can be manually changed by tempering with the arguments `levelConstantMinimum` and `levelConstantMaximum`.
+Typically, designs with very large non-centrality parameters will require a smaller level constant (i.e., a reduction of `levelConstantMinimum`) and designs with very small non-centrality parameters will require a larger level constant (i.e., an increase of `levelConstantMaximum`).
+
+Note that imposing inappropriate restrictions on the optimal conditional error function via `minimumConditionalError` and `maximumConditionalError` or `maximumSecondStageInformation` and `minimumSecondStageInformation` may make it impossible to calculate a level constant which fulfills the level condition.
+
+## Calculating monotonisation constants
+
+The use of a conditional error function which is increasing for any first-stage p-values is discouraged due to a type I error inflation in the case of a conservatively distributed $p_1$ and because the resulting power function of the trial may be decreasing in the true effect size (Koyama et al., 2005).
+Because the framework of the optimal conditional error function may however lead to an increasing conditional error function for certain specifications, a non-increasing transformation may be required.
+To retain optimality, the non-monotone optimal conditional error function must be set to constant values on certain intervals.
+How to identify the constants and intervals is described in detail in Brannath et al. (2024).
+
+Whenever a design object is created using `getDesignOptimalCondtionalErrorFunction()`, the function `getMonotonisationConstants()` is internally called to identify the intervals and constants.
+If the specified design produces an optimal conditional error function which already is non-increasing in the first-stage p-value, no monotonisation is necessary.
+For illustration purposes, `optconerrf` also allows the user to skip the monotonisation process by setting `enforceMonotonicity=FALSE`. 
+In this case, the resulting conditional error function may be increasing for some p-values. 
+Note that generally, such a design should not be used for practical purposes.
+
+# Using the design object
+
+As an example, we consider an adaptive design with overall type I error rate `alpha=0.025`, early rejection and futility boundaries `alpha1=0.0154` and `alpha0=0.5` with a target conditional power `conditionalPower=0.9` at a fixed alternative `delta1=0.25` (note that `useInterimEstimate=FALSE`).
+We assume a fixed effect of `deltaLR=0.25` for the calculation of the likelihood ratio (`likelihoodRatioDistribution="fixed"`) and `firstStageInformation=50`.
+Note that this design approximates the original trial design used in Brannath & Bauer (2004) and achieves an overall power of 90%.
+
+```{r, message = FALSE, results = "markup"}
+design <- getDesignOptimalConditionalErrorFunction(
+  alpha = 0.025, alpha1 = 0.0154, alpha0 = 0.5, conditionalPower = 0.9,
+  delta1 = 0.25, likelihoodRatioDistribution = "fixed", deltaLR = 0.25,
+  firstStageInformation = 50, useInterimEstimate = FALSE
+)
+```
+
+Once the design object is created using `getDesignOptimalCondtionalErrorFunction()`, it can be easily passed to other functions of `optconerrf`.
+The design object is an instance of the class `TrialDesignOptimalConditionalError` and offers implementations of the generic functions `print()`, `plot()` and `summary()`.
+The `print()` function provides a comprehensive overview of user-specified parameters (such as early stopping boundaries and effect sizes) as well as internally calculated variables (such as the level constant):
+
+```{r, message = FALSE, results = "markup"}
+# Comprehensive design output
+print(design)
+```
+
+The `plot()` function has 4 different modes of operation, which are specified via the argument `type`:
+Passing `design` and `type = 1` to the `plot()` function produces a plot visualising the optimal conditional error function resulting from the specification in `design` in relation to the first-stage p-value.
+As `type = 1` is also the default value, the argument can be omitted to achieve this function behaviour:
+
+```{r, fig.dim = c(6,4)}
+plot(design) # Plot of the optimal conditional error function
+```
+
+Using `type = 2` produces a plot of the second-stage information resulting from the design specification in relation to the first-stage p-value.
+The second-stage information $I_2(p_1)$ of a first-stage p-value $p_1$ is calculated as:
+
+$$
+I_2(p_1) = \frac{\bigl( \Phi^{-1}(1-\alpha_2(p_1)) + \Phi^{-1}(CP)  \bigr)^2}{\Delta_1^2}.
+$$
+
+```{r, fig.dim = c(6,4)}
+plot(design, type = 2) # Plot of the second-stage information
+```
+
+The remaining plot types can be used to visualise the likelihood ratio $l(p_1)$ (`type = 3`) and the function $Q(p_1)$ (`type = 4`) resulting from the design specification and will not be shown here.
+
+To access individual fields of the object, e.g., the overall type I error rate (`alpha`) or the level constant (`levelConstant`) the following code can be used:
+
+```{r} 
+design$alpha
+design$levelConstant
+print(design$levelConstant, digits = 12) # For more precision
+```
+
+# Computing the optimal conditional error function and second-stage information
+
+Values for the optimal conditional error function are calculated using the function `getOptimalConditionalError()`.
+For this function, the p-value of the first stage (argument `firstStagePValue`) and a design object, created using `getDesignOptimalConditionalErrorFunction()`, must be provided.
+
+For the specification above, the optimal conditional error for an exemplary first-stage p-value of `0.1` can be calculated as:
+
+```{r}
+getOptimalConditionalError(
+  firstStagePValue = 0.1, design = design
+)
+```
+
+Multiple first-stage p-values may also be provided as a vector.
+For first-stage p-values with $p_1 \leq \alpha_1$ or $p_1 > \alpha_0$, a conditional error of 1 or 0 is returned, respectively.
+
+```{r}
+getOptimalConditionalError(
+  firstStagePValue = c(0.0005, 0.1, 0.05, 0.5, 0.8),
+  design = design
+)
+```
+
+The calculation of the second-stage information is achieved in a similar fashion, using `getSecondStageInformation()`:
+
+```{r}
+getSecondStageInformation(
+  firstStagePValue = 0.1, design = design
+)
+
+getSecondStageInformation(
+  firstStagePValue = c(0.0005, 0.1, 0.05, 0.5, 0.8),
+  design = design
+)
+```
+
+Note that the second-stage information for first-stage p-values with $p_1 \leq \alpha_1$ or $p_1 > \alpha_0$ is always 0, as the trial is stopped early for such results.
+
+# Calculation of expected second-stage information
+\label{section_exp}
+
+With the function `getExpectedSecondStageInformation()`, a calculation of the expected second-stage information that a specification of the optimal conditional error function yields can be calculated.
+The calculation of the expected second-stage information $\mathbb{E}(I_2)$ is performed as:
+
+$$
+\mathbb{E}(I_2) = \int_{\alpha_1}^{\alpha_0} \frac{ (\Phi^{-1}(1-\alpha_2(p_1)) + \Phi^{-1}(CP_{\Delta_1}))^2\cdot l(p_1)}{\Delta_1^2}dp_1.
+$$
+The effect $\Delta_1$ provides the effect for which the conditional power $CP_{\Delta_1}$ is targeted.
+$\Delta_1$ is extracted from the design object and may depend on the interim data.
+
+The likelihood ratio $l(p_1)$ in this case represents the scenario under which the performance of a specific design is to be evaluated.
+For example, one may have specified a design assuming $\Delta=0.25$ as a fixed effect for the likelihood ratio (as above), but now wishes to investigate the performance of this design in case $\Delta=0$, i.e., if the null hypothesis is true.
+This can be achieved by the following code:
+
+```{r}
+getExpectedSecondStageInformation(
+  design = design, likelihoodRatioDistribution = "fixed", deltaLR = 0
+)
+```
+
+The specification of the likelihood ratio under which to calculate the expected second-stage information is given by `likelihoodRatioDistribution = "fixed"` and the corresponding treatment effect is specified by `deltaLR = 0`.
+
+Alternatively, one may calculate the expected second-stage information of the design if it was correctly specified, i.e., for $\Delta=0.25$:
+
+```{r}
+getExpectedSecondStageInformation(
+  design = design, likelihoodRatioDistribution = "fixed", deltaLR = 0.25
+)
+```
+
+A shortcut for the calculation of the expected second-stage information under correct specification is also available by omitting the arguments `likelihoodRatioDistribution` and `deltaLR`, in which case the likelihood ratio specification given in the design is extracted and used for the calculation.
+
+```{r}
+getExpectedSecondStageInformation(
+  design = design
+)
+```
+
+Multiplying the respective information values by a factor of 2 (approximately) yields the original results of Brannath & Bauer (2004).
+
+In addition to calculating the expected second-stage information for a single fixed effect size (by specifying `likelihoodRatioDistribution = "fixed"` and a single value for `deltaLR`), it is also possible to provide multiple weighted fixed effect sizes (by specifying `likelihoodRatioDistribution = "fixed"`, multiple values for `deltaLR` and possibly respective weights with `weightsDeltaLR`) or to use a distributional assumption for the effect size in the likelihood ratio (by specifying one of `"normal"`, `"exp"` or `"unif"` for `likelihoodRatioDistribution` and the respective parameters).
+
+# Complementary functions
+
+In addition to the core functions described above, the `optconerrf` package provides additional functions which relate to the operating characteristics of the design.
+An exact calculation of the overall power of a given design can be achieved by using the function `getOverallPower()`:
+
+```{r}
+getOverallPower(
+  design, alternative = c(0, 0.25))
+```
+
+The argument `alternative` may consist of multiple elements and provides the effect sizes for which the overall power should be calculated.
+
+In addition to an exact calculation via `getOverallPower()`, the same operating characteristics may be simulated using the function `getSimulationResults()`.
+
+The `summary()` function is also implemented for objects of class `TrialDesignOptimalConditionalError` and combines selected results from `getExpectedSecondStageInformation()` and `getOverallPower()` to provide a general overview of the design performance:
+
+```{r}
+summary(design)
+```
+
+
+# References
+
+Brannath, W. & Bauer, P. (2004). Optimal conditional error functions for the control of conditional power. Biometrics, 60 (3), 715–723. https://www.jstor.org/stable/3695393
+
+Brannath, W., Dreher, M., zur Verth, J., Scharpenberg, M. (2024). Optimal monotone conditional error functions. https://arxiv.org/abs/2402.00814
+
+Hung, H. M. J., O’Neill, R. T., Bauer, P. & Kohne, K. (1997). The behavior of the p-value when the alternative hypothesis is true. Biometrics. https://www.jstor.org/stable/2533093
