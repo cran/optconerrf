@@ -1,0 +1,292 @@
+# Fix design for all tests
+design <- getDesignOptimalConditionalErrorFunction(
+  alpha = 0.025,
+  alpha1 = 0.001,
+  alpha0 = 0.5,
+  conditionalPower = 0.9,
+  delta1 = 0.25,
+  likelihoodRatioDistribution = "fixed",
+  deltaLR = 0.25,
+  firstStageInformation = 80,
+  useInterimEstimate = FALSE,
+)
+
+# More elaborate design
+design2 <-
+  suppressWarnings(
+    getDesignOptimalConditionalErrorFunction(
+      alpha = 0.025,
+      alpha1 = 0.001,
+      alpha0 = 0.5,
+      delta1Min = 0.2,
+      useInterimEstimate = TRUE,
+      firstStageInformation = 40,
+      likelihoodRatioDistribution = "maxlr",
+      conditionalPowerFunction = function(x) {
+        1 - pnorm(x)
+      },
+      minimumConditionalError = 0.01,
+      maximumConditionalError = 0.9,
+      minimumSecondStageInformation = 5,
+      maximumSecondStageInformation = 400,
+      levelConstantMinimum = 0.5,
+      levelConstantMaximum = 10.5
+    )
+  )
+
+
+testthat::test_that(desc = "print.TrialDesignOptimalConditionalError works", code = {
+  print_output <- capture.output(print(design))
+
+  # Sporadic tests of output
+  testthat::expect_true(
+    object = all(
+      c(
+        grepl(
+          pattern = "Optimal Conditional Error Function Design:",
+          x = print_output[1]
+        ),
+        grepl(
+          pattern = "General design parameters:",
+          x = print_output[3]
+        ),
+        grepl(
+          pattern = "Overall significance level: 0.025",
+          x = print_output[4]
+        ),
+        grepl(
+          pattern = "0.001",
+          x = print_output[5]
+        ),
+        grepl(
+          pattern = "0.5",
+          x = print_output[6]
+        ),
+        grepl(
+          pattern = "Alternative: 0.25",
+          x = print_output[10]
+        ),
+        grepl(
+          pattern = "First-stage information: 80",
+          x = print_output[12]
+        )
+      )
+    )
+  )
+  print_output <- capture.output(print(design2))
+  testthat::expect_true(
+    all(c(
+      grepl(pattern = "Conditional power specification", x = print_output[10]),
+      grepl(
+        pattern = "Alternative: interim estimate restricted",
+        x = print_output[12]
+      ),
+      grepl(pattern = "Monotonisation constants", x = print_output[23]),
+      grepl(pattern = "Constraints on optimal", x = print_output[7]),
+      grepl(pattern = "Constraints on second-stage", x = print_output[8])
+    ))
+  )
+})
+
+testthat::test_that(desc = "print.SimulationResultsOptimalConditionalError works", code = {
+  sim_results <- getSimulationResults(
+    design = design,
+    alternative = c(0, 0.5),
+    seed = 12345,
+    maxNumberOfIterations = 10
+  )
+
+  print_output <- capture.output(print(sim_results))
+
+  # Sporadic tests of output
+  testthat::expect_true(
+    object = all(
+      c(
+        grepl(
+          pattern = "Simulation results",
+          x = print_output[1]
+        ),
+        grepl(
+          pattern = "Alternative:",
+          x = print_output[3]
+        ),
+        grepl(
+          pattern = "First-stage futility:",
+          x = print_output[4]
+        ),
+        grepl(
+          pattern = "First-stage efficacy:",
+          x = print_output[5]
+        ),
+        grepl(
+          pattern = "Overall power:",
+          x = print_output[6]
+        )
+      )
+    )
+  )
+})
+
+testthat::test_that(desc = "print.PowerResultsOptimalConditionalError operational", code = {
+  power_results <- getOverallPower(design, alternative = 0.25)
+
+  print_output <- capture.output(print(power_results))
+
+  testthat::expect_true(
+    all(
+      c(
+        grepl(pattern = "Power calculation results", x = print_output[1]),
+        grepl(pattern = "Alternative", x = print_output[3]),
+        grepl(pattern = "First-stage futility", x = print_output[4]),
+        grepl(pattern = "First-stage efficacy", x = print_output[5]),
+        grepl(pattern = "Overall power", x = print_output[6])
+      )
+    )
+  )
+})
+
+testthat::test_that(desc = "plot.TrialDesignOptimalConditionalError with type = 1 operational", code = {
+  plot_output <- plot(
+    design,
+    type = 1
+  )
+  testthat::expect_s3_class(
+    object = plot_output,
+    class = "ggplot"
+  )
+
+  plot_output2 <- plot(
+    design2,
+    type = 1,
+    plotNonMonotoneFunction = TRUE
+  )
+  testthat::expect_s3_class(
+    object = plot_output2,
+    class = "ggplot"
+  )
+})
+
+testthat::test_that(desc = "plot.TrialDesignOptimalConditionalError with type = 2 operational", code = {
+  plot_output <- plot(
+    design,
+    type = 2
+  )
+  testthat::expect_s3_class(
+    object = plot_output,
+    class = "ggplot"
+  )
+
+  plot_output2 <- plot(
+    design2,
+    type = 2,
+    plotNonMonotoneFunction = TRUE
+  )
+  testthat::expect_s3_class(
+    object = plot_output2,
+    class = "ggplot"
+  )
+})
+
+testthat::test_that(desc = "plot.TrialDesignOptimalConditionalError with type = 3 operational", code = {
+  plot_output <- plot(
+    design,
+    type = 3
+  )
+  testthat::expect_s3_class(
+    object = plot_output,
+    class = "ggplot"
+  )
+
+  plot_output2 <- plot(
+    design2,
+    type = 3,
+    plotNonMonotoneFunction = TRUE
+  )
+  testthat::expect_s3_class(
+    object = plot_output2,
+    class = "ggplot"
+  )
+})
+
+testthat::test_that(desc = "plot.TrialDesignOptimalConditionalError with type = 4 operational", code = {
+  plot_output <- plot(
+    design,
+    type = 4
+  )
+  testthat::expect_s3_class(
+    object = plot_output,
+    class = "ggplot"
+  )
+
+  plot_output2 <- plot(
+    design2,
+    type = 4,
+    plotNonMonotoneFunction = TRUE
+  )
+  testthat::expect_s3_class(
+    object = plot_output2,
+    class = "ggplot"
+  )
+})
+
+testthat::test_that(desc = "summary.TrialDesignOptimalConditionalError operational", code = {
+  summary_output <- capture.output(summary(design))
+
+  testthat::expect_true(
+    all(c(
+      grepl(
+        pattern = "Summary of the Optimal Conditional Error Function Design",
+        x = summary_output[1]
+      ),
+      grepl(
+        pattern = "Overall significance level: 0.025",
+        x = summary_output[4]
+      ),
+      grepl(pattern = "First-stage efficacy", x = summary_output[5]),
+      grepl(pattern = "Binding first-stage futility", x = summary_output[6]),
+      grepl(
+        pattern = "Maximum second-stage information",
+        x = summary_output[13]
+      ),
+      grepl(pattern = "Futility stopping probability", x = summary_output[19])
+    ))
+  )
+
+  summary_output2 <- capture.output(summary(design2))
+
+  testthat::expect_true(
+    all(c(
+      grepl(
+        pattern = "Summary of the Optimal Conditional Error Function Design",
+        x = summary_output2[1]
+      ),
+      grepl(
+        pattern = "Overall significance level: 0.025",
+        x = summary_output2[4]
+      ),
+      grepl(pattern = "First-stage efficacy", x = summary_output2[5]),
+      grepl(pattern = "Binding first-stage futility", x = summary_output2[6]),
+      grepl(pattern = "Second-stage information", x = summary_output2[8]),
+      grepl(
+        pattern = "Power and stopping probabilities",
+        x = summary_output2[14]
+      )
+    ))
+  )
+})
+
+testthat::test_that(desc = ".rangeCheck operational", code = {
+  testvar <- c(0, 1, 2)
+  testthat::expect_true(
+    .rangeCheck(variable = testvar, range = c(0, 2), allowedEqual = TRUE)
+  )
+  testthat::expect_error(
+    .rangeCheck(variable = testvar, range = c(0, 1), allowedEqual = FALSE)
+  )
+  testthat::expect_error(
+    .rangeCheck(variable = testvar, range = c(1, 2), allowedEqual = FALSE)
+  )
+  testthat::expect_error(
+    .rangeCheck(variable = testvar, range = c(3, 4), allowedEqual = TRUE)
+  )
+})
