@@ -1,6 +1,6 @@
 Package: optconerrf
 Title: Optimal Monotone Conditional Error Functions
-Version: 1.0.2
+Version: 1.0.3
 Authors@R: 
   c(person(given = "Morten", family = "Dreher", email = "morten.dreher@outlook.de", role = c("aut", "cre")),
     person(given = "Werner", family = "Brannath", role = c("aut", "cph"), comment = c(ORCID = "0000-0002-8622-3904")),
@@ -10,14 +10,14 @@ Description: Design and analysis of confirmatory adaptive clinical trials using 
 Imports: ggplot2, methods
 License: GPL (>= 3)
 Encoding: UTF-8
-RoxygenNote: 7.3.2
 Suggests: knitr, rmarkdown, testthat (>= 3.0.0)
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 URL: https://github.com/morten-dreher/optconerrf
 BugReports: https://github.com/morten-dreher/optconerrf/issues
+Config/roxygen2/version: 8.1.0
 NeedsCompilation: no
-Packaged: 2026-04-15 19:47:03 UTC; Morten
+Packaged: 2026-09-03 19:45:39 UTC; Morten
 Author: Morten Dreher [aut, cre],
   Werner Brannath [aut, cph] (ORCID:
     <https://orcid.org/0000-0002-8622-3904>),
@@ -26,4 +26,4 @@ Author: Morten Dreher [aut, cre],
   Johanna zur Verth [aut]
 Maintainer: Morten Dreher <morten.dreher@outlook.de>
 Repository: CRAN
-Date/Publication: 2026-04-15 20:10:03 UTC
+Date/Publication: 2026-09-03 20:10:03 UTC
